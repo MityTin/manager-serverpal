@@ -138,7 +138,7 @@ CONFIG_TEMPLATE = {
     "ANTIBUG_MAX_KICKS":    "3",
     "ANTIBUG_KICK_WINDOW":  "300",
     "STEAMCMD_EXE":         r"C:\steamcmd\steamcmd.exe",
-    "GITHUB_REPO":          "",
+    "GITHUB_REPO":          "MityTin/manager-serverpal",
     "AUTO_UPDATE_CHECK":    "true",
 }
 

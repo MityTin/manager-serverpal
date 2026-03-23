@@ -30,5 +30,7 @@
     "UI_NPC_CAPTURE_BAN_ENABLED": "true",
     "UI_NPC_ATTACK_KICK_ENABLED": "true",
     "UI_PALDEF_LOG_CLEANUP_ENABLED": "true",
-    "UI_PALDEF_LOG_KEEP_HOURS": "24"
+    "UI_PALDEF_LOG_KEEP_HOURS": "24",
+    "GITHUB_REPO": "MityTin/manager-serverpal",
+    "AUTO_UPDATE_CHECK": "true"
 }
