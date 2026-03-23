@@ -1,0 +1,19 @@
+# Manager ServerPal v1.0.0 by MityTinDev - Python Dependencies
+# Install: python -m pip install -r requirements.txt
+
+# HTTP client (REST API game + webhook)
+requests>=2.31.0,<3.0.0
+certifi>=2024.2.2
+
+# Process monitor
+psutil>=5.9.0,<7.0.0
+
+# Live map image support (optional in UI but safe to install)
+Pillow>=10.0.0,<12.0.0
+
+# Discord bot bridge
+discord.py>=2.3.0,<3.0.0
+
+# Mod archive extractors
+py7zr>=0.21.0,<1.0.0
+rarfile>=4.1,<5.0

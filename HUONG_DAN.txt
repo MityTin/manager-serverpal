@@ -1,0 +1,223 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║     Manager ServerPal v1.0.0 by MityTinDev — Hướng Dẫn Cài Đặt     ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  YÊU CẦU HỆ THỐNG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✔ Windows 10/11 hoặc Windows Server 2019/2022 (64-bit)
+  ✔ Python 3.10+  →  https://www.python.org/downloads/
+      ⚠ Khi cài Python: TICK chọn "Add Python to PATH"
+  ✔ Node.js 18+ (LTS)  →  https://nodejs.org/
+      (Chỉ cần nếu dùng tính năng Live Map)
+  ✔ PalServer đã cài đặt qua Steam hoặc SteamCMD
+  ✔ SteamCMD (để cập nhật server)  →  https://developer.valvesoftware.com/wiki/SteamCMD
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CÀI ĐẶT NHANH (3 bước — Recommended)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Bước 1  →  Chạy  install.bat   (cài Python packages + Node.js)
+  Bước 2  →  Chạy  setup.py      (cấu hình thông tin server)
+              hoặc sửa trực tiếp  manager_config.json
+  Bước 3  →  Chạy  start.bat     (launcher chính — chọn app hoặc update)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ĐÓNG GÓI EXE 1 FILE (Manager_ServerPal.exe)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Mục tiêu:
+  - Build ra 1 file duy nhất:  dist\Manager_ServerPal.exe
+  - Khi user chạy EXE, app setup vẫn có đầy đủ chức năng chọn thư mục cài server
+    (chọn ổ đĩa C/D/E... theo nhu cầu).
+
+  Cách build:
+  1) Mở thư mục manager
+  2) Chạy file:
+       build_manager_serverpal_exe.bat
+  3) Đợi build xong, lấy file:
+       dist\Manager_ServerPal.exe
+
+  Ghi chú:
+  - EXE được build ở chế độ --onefile và --windowed (không hiện cửa sổ console).
+  - Nếu Windows SmartScreen cảnh báo, chọn More info -> Run anyway.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TẠO BỘ CÀI CHUYÊN NGHIỆP (.EXE INSTALLER)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Mục tiêu:
+  - Tạo file cài đặt chuẩn Windows:
+      release\Manager_ServerPal_Setup_v1.0.0.exe
+  - Khi cài, user có thể chọn ổ đĩa/thư mục cài đặt, tạo shortcut Desktop,
+    có uninstall trong Apps & Features.
+
+  Cách làm:
+  1) Cài Inno Setup 6:
+       https://jrsoftware.org/isdl.php
+  2) Build app exe trước:
+       build_manager_serverpal_exe.bat
+  3) Build installer:
+       build_manager_serverpal_installer.bat
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CÀI ĐẶT THỦ CÔNG (nếu muốn kiểm soát từng bước)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Mở Command Prompt / PowerShell trong thư mục manager:
+
+       pip install -r requirements.txt
+
+  2. Cài Node.js packages cho Live Map:
+
+       cd palserver-online-map-main
+       npm install
+       cd ..
+
+  3. Cấu hình server:
+
+       python setup.py
+
+  4. Chạy app chính:
+
+       python serverpal.py
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CẤU HÌNH (manager_config.json) — 7 nhóm
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [1] SERVER
+      SERVER_EXE          →  Đường dẫn đến PalServer.exe
+                             ⭐ Chỉ cần đặt mỗi key này — tất cả path PalServer
+                                (PalWorldSettings.ini, Logs, PalDefender...) đều tự tính!
+
+  [2] REST API
+      API_URL             →  http://127.0.0.1:8212/v1/api  (giữ nguyên nếu local)
+      AUTH_PASS           →  AdminPassword trong PalWorldSettings.ini
+
+  [3] RCON
+      RCON_HOST           →  127.0.0.1  (giữ nguyên nếu local)
+      RCON_PORT           →  25575  (RCONPort trong PalWorldSettings.ini)
+      RCON_PASSWORD       →  Giống AdminPassword
+
+  [4] PALDEFENDER API
+      PALDEF_API_BASE     →  http://127.0.0.1:17993  (nếu cài PalDefender plugin)
+
+  [5] DISCORD WEBHOOKS
+      DISCORD_WEBHOOK_URL →  Webhook thông báo chung  (để trống nếu không dùng)
+      ANTIBUG_WEBHOOK_URL →  Webhook kênh ADMIN  (AntiBug + Cheat alert)
+      DISCORD_CHAT_WEBHOOK→  Webhook kênh CHAT  (ingame → Discord 1 chiều)
+
+  [6] DISCORD BOT  (Chat Bridge 2 chiều Discord ↔ Ingame)
+      DISCORD_BOT_TOKEN      →  Token bot  (xem hướng dẫn Discord Bot bên dưới)
+      DISCORD_CHAT_CHANNEL_ID→  ID kênh Discord  (chuột phải kênh → Copy Channel ID)
+
+  [7] ANTIBUG
+      ANTIBUG_MAX_KICKS   →  Số lần vi phạm trước khi BAN vĩnh viễn  (mặc định: 3)
+      ANTIBUG_KICK_WINDOW →  Cửa sổ thời gian giây  (mặc định: 300 = 5 phút)
+
+  [8] UPDATE
+      STEAMCMD_EXE        →  Đường dẫn SteamCMD.exe  (dùng để cập nhật PalServer)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CẬP NHẬT PALWORLD DEDICATED SERVER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Cách 1 — Qua setup.py → Tab "⬆ Update" → nhấn "Cập nhật PalServer"
+
+  Cách 2 — Thủ công (CMD):
+       steamcmd.exe +login anonymous +app_update 2394010 validate +quit
+
+  Cách 3 — Qua Steam Client:
+       Mở Steam → Library → Palworld Dedicated Server → Update
+
+  App ID Palworld Dedicated Server: 2394010
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DISCORD BOT — Hướng dẫn tạo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Vào  https://discord.com/developers/applications
+  2. Nhấn "New Application" → đặt tên → Create
+  3. Vào tab "Bot" → nhấn "Reset Token" → Copy token
+     Dán vào  DISCORD_BOT_TOKEN  trong manager_config.json
+  4. Bật Privileged Gateway Intents:
+       Bot → Privileged Gateway Intents
+       ✅ SERVER MEMBERS INTENT
+       ✅ MESSAGE CONTENT INTENT
+  5. Mời bot vào Discord server của bạn:
+       OAuth2 → URL Generator
+       Scope: bot
+       Permissions: Send Messages, Read Message History, View Channels
+       → Copy URL → mở trình duyệt → Authorize
+  6. Copy Channel ID kênh chat:
+       Discord → Cài đặt → Bật Developer Mode
+       Chuột phải kênh → Copy Channel ID
+       Dán vào  DISCORD_CHAT_CHANNEL_ID
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CẤU TRÚC THƯ MỤC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  manager/
+  ├── serverpal.py                  ← App chính
+  ├── setup.py                      ← Cấu hình + Update + Launcher
+  ├── start.bat                     ← Khởi động nhanh 1 click
+  ├── install.bat                   ← Cài đặt môi trường lần đầu
+  ├── manager_config.json           ← File cấu hình
+  ├── requirements.txt              ← Python packages
+  ├── HUONG_DAN.txt                 ← File này
+  ├── _logs/                        ← Log AntiBug + danh sách BAN
+  │   ├── antibug_log.txt
+  │   └── banlist.txt
+  ├── _tools/                       ← Script tiện ích phát triển
+  └── palserver-online-map-main/    ← Live Map (Node.js, port 3333)
+      ├── server.js
+      ├── package.json
+      └── public/
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TÀI NGUYÊN & LIÊN KẾT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Palworld REST API docs  →  https://tech.palworldgame.com/api
+  PalWorld Settings guide →  https://tech.palworldgame.com/settings-and-operation/configuration
+  SteamCMD docs           →  https://developer.valvesoftware.com/wiki/SteamCMD
+  Discord.py docs         →  https://discordpy.readthedocs.io/
+  Discord Developer Portal→  https://discord.com/developers/applications
+  Python download         →  https://www.python.org/downloads/
+  Node.js download        →  https://nodejs.org/
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  XỬ LÝ SỰ CỐ PHỔ BIẾN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ❌ "python không được nhận dạng..."
+     → Cài lại Python, tick "Add Python to PATH"
+
+  ❌ "No module named 'requests'..."
+     → Chạy: pip install -r requirements.txt
+
+  ❌ Discord Bridge không hoạt động
+     → Kiểm tra BOT_TOKEN, CHANNEL_ID
+     → Bật MESSAGE CONTENT INTENT trong Discord Developer Portal
+
+  ❌ REST API lỗi 401
+     → Kiểm tra AUTH_PASS khớp AdminPassword trong PalWorldSettings.ini
+
+  ❌ RCON không kết nối được
+     → Kiểm tra RCONEnabled=True và RCONPort trong PalWorldSettings.ini
+
+  ❌ Live Map không hiện
+     → Chạy: cd palserver-online-map-main && npm install && node server.js
+

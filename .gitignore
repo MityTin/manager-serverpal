@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+
+# Build outputs
+build/
+dist/
+release/
+*.spec
+
+# Local caches/logs
+.npm-cache/
+*.log
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
