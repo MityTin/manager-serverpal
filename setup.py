@@ -101,7 +101,7 @@ MANAGER_PAL_SETTINGS_INI = os.path.join(BUNDLE_DIR, "PalWorldSettings.ini")
 
 # App ID Palworld Dedicated Server trên Steam
 PALWORLD_APPID = "2394010"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 DEFAULT_SERVER_ROOT = r"C:\palwordsteamserver"
 DEFAULT_SERVER_EXE = os.path.join(DEFAULT_SERVER_ROOT, "steamapps", "common", "PalServer", "PalServer.exe")
 
@@ -109,7 +109,7 @@ DEFAULT_SERVER_EXE = os.path.join(DEFAULT_SERVER_ROOT, "steamapps", "common", "P
 #  CONFIG TEMPLATE (dùng khi tạo config mới)
 # ─────────────────────────────────────────────
 CONFIG_TEMPLATE = {
-    "_":                    "Manager ServerPal — v1.0.0 by MityTinDev. Chỉnh giá trị bên dưới rồi chạy: python serverpal.py",
+    "_":                    "Manager ServerPal — v1.0.1 by MityTinDev. Chỉnh giá trị bên dưới rồi chạy: python serverpal.py",
     "SERVER_EXE":           DEFAULT_SERVER_EXE,
     "API_URL":              "http://127.0.0.1:8212/v1/api",
     "ADMIN_PASSWORD":       "Admin#123",
@@ -782,7 +782,7 @@ class SetupApp:
         tk.Label(hdr, text="⚙  Manager ServerPal — Setup & Launcher",
                  bg="#0d0d1a", fg=self.ACCENT,
                  font=("Segoe UI", 14, "bold")).pack(side="left", padx=16)
-        tk.Label(hdr, text="Phiên bản v1.0.0 by MityTinDev",
+        tk.Label(hdr, text="Phiên bản v1.0.1 by MityTinDev",
                  bg="#0d0d1a", fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(side="right", padx=16)
 
@@ -1138,7 +1138,7 @@ class SetupApp:
         ).pack(pady=(20, 6))
         tk.Label(
             center,
-            text="Phần mềm quản lý server Palworld • Manager ServerPal • v1.0.0 by MityTinDev",
+            text="Phần mềm quản lý server Palworld • Manager ServerPal • v1.0.1 by MityTinDev",
             bg=self.BG,
             fg=self.FG_DIM,
             font=("Segoe UI", 9),
@@ -1226,7 +1226,7 @@ class SetupApp:
         ).pack(pady=(6, 6))
         tk.Label(
             center,
-            text="Phát triển bởi lập trình viên MityTinDev • Phiên bản v1.0.0 by MityTinDev",
+            text="Phát triển bởi lập trình viên MityTinDev • Phiên bản v1.0.1 by MityTinDev",
             bg=self.BG,
             fg="#9aa0a6",
             font=("Segoe UI", 9, "italic"),
@@ -2940,6 +2940,19 @@ class SetupApp:
                 if name.endswith(".exe") and dl:
                     installer_url = dl
                     break
+        # Fallback chuyên dụng: lấy installer từ source repo (không phụ thuộc release asset).
+        if not installer_url and tag:
+            raw_url = f"https://github.com/{repo}/raw/main/release/Manager_ServerPal_Setup_v{tag}.exe"
+            try:
+                req = urllib.request.Request(
+                    raw_url,
+                    method="HEAD",
+                    headers={"User-Agent": "ManagerServerPal-Updater/1.0"},
+                )
+                with urllib.request.urlopen(req, timeout=15) as _:
+                    installer_url = raw_url
+            except Exception:
+                pass
         body = str(data.get("body", "") or "").strip()
         return {
             "version": tag,

@@ -566,7 +566,7 @@ class ManagerServerPalApp:
     # ── Khởi tạo ──────────────────────────────
     def __init__(self, root):
         self.root = root
-        self.root.title("Manager ServerPal v1.0.0 by MityTinDev")
+        self.root.title("Manager ServerPal v1.0.1 by MityTinDev")
         self.root.geometry("1400x900")
         self.root.configure(bg="#0a0a0a")
         self._icon_img = None

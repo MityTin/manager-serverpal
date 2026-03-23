@@ -2,7 +2,7 @@
 ; Build with Inno Setup 6 (ISCC.exe)
 
 #define MyAppName "Manager ServerPal"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "MityTinDev"
 #define MyAppExeName "Manager_ServerPal.exe"
 #define MyServerPalExeName "Manager_ServerPal_App.exe"
@@ -22,7 +22,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=no
 PrivilegesRequired=lowest
 OutputDir=..\release
-OutputBaseFilename=Manager_ServerPal_Setup_v1.0.0
+OutputBaseFilename=Manager_ServerPal_Setup_v1.0.1
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern

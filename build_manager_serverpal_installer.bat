@@ -60,7 +60,7 @@ if %errorlevel% neq 0 (
 
 echo.
 echo [OK] Da tao installer tai:
-echo   release\Manager_ServerPal_Setup_v1.0.0.exe
+echo   release\Manager_ServerPal_Setup_v1.0.1.exe
 echo.
 pause
 exit /b 0
