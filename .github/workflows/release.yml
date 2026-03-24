@@ -1,0 +1,79 @@
+name: Build and Publish Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Build Manager_ServerPal.exe (setup app)
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --onefile --windowed `
+            --name "Manager_ServerPal" `
+            --icon "_ui_assets\app_icon.png" `
+            --add-data "_ui_assets;_ui_assets" `
+            --add-data "requirements.txt;." `
+            --add-data "HUONG_DAN.txt;." `
+            --add-data "PalWorldSettings.ini;." `
+            --add-data "manager_config.json;." `
+            setup.py
+
+      - name: Build Manager_ServerPal_App.exe (main app)
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --onefile --windowed `
+            --name "Manager_ServerPal_App" `
+            --icon "_ui_assets\app_icon.png" `
+            --add-data "_ui_assets;_ui_assets" `
+            --add-data "_datadb;_datadb" `
+            --add-data "_map_assets;_map_assets" `
+            --add-data "manager_config.json;." `
+            --add-data "PalWorldSettings.ini;." `
+            serverpal.py
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer\Manager_ServerPal.iss"
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Manager_ServerPal_Setup
+          path: release/Manager_ServerPal_Setup_v*.exe
+
+      - name: Upload to GitHub Release (tag push only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/Manager_ServerPal_Setup_v*.exe
+          generate_release_notes: true

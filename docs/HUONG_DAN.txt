@@ -1,0 +1,22 @@
+HUONG DAN NHANH - Manager ServerPal v1.0.2
+
+Nguoi dung cuoi (ban cai dat tu installer):
+1) Khong can cai Python hay Node.js.
+2) Mo app bang shortcut "Manager ServerPal".
+3) Moi thu da duoc dong goi san trong EXE + Inno Setup.
+
+Dev build (chi danh cho nguoi phat trien source):
+1) Can Python de build EXE.
+2) Chay: _scripts\build_full_release.bat
+3) Installer se tao tai: release\Manager_ServerPal_Setup_v1.0.2.exe
+
+Chay source .py la tuy chon cho dev, khong bat buoc cho client:
+   - python setup.py
+   - python serverpal.py
+
+Cau truc thu muc:
+   - _scripts : script lien quan build/cai dat/cleanup
+   - _datadb  : du lieu python cho app
+   - _ui_assets, _map_assets : tai nguyen app
+   - docs     : tai lieu huong dan
+
