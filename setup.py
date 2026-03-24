@@ -1122,7 +1122,7 @@ class SetupApp:
         self._field(s, 0, "GITHUB_REPO", "GitHub Repo (owner/repo)",
                     note="Ví dụ: mitytindev/manager-serverpal")
         self._field(s, 1, "AUTO_UPDATE_CHECK", "Auto Check Update",
-                    note="true/false")
+                    note="true/false (chỉ tự kiểm tra phiên bản, không tự tải/cài)")
 
     # ── Tab Launch ────────────────────────────
     def _build_launch_tab(self, parent):
@@ -2985,6 +2985,11 @@ class SetupApp:
                     msg = f"Có bản mới: v{latest} (hiện tại v{APP_VERSION})"
                     self.root.after(0, lambda m=msg: self._lbl_update_status.config(text=m, fg="#66ff88"))
                     self.root.after(0, lambda m=msg: self._log(f"✅ {m}"))
+                    if silent:
+                        self.root.after(
+                            0,
+                            lambda: self._log("ℹ️ Auto-check chỉ phát hiện phiên bản mới; tải/cài do bạn bấm nút 'Tải & cài bản mới'.")
+                        )
                     if not silent:
                         note = payload.get("notes", "") or "(không có release notes)"
                         preview = note[:800] + ("..." if len(note) > 800 else "")
