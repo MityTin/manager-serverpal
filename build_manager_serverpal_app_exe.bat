@@ -19,7 +19,7 @@ echo [1/3] Kiem tra Python...
 %PY_EXE% --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [LOI] Khong tim thay Python.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -27,7 +27,7 @@ echo [2/3] Cai dat PyInstaller...
 %PY_EXE% -m pip install --disable-pip-version-check --upgrade pyinstaller >nul
 if %errorlevel% neq 0 (
     echo [LOI] Khong cai duoc PyInstaller.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -48,13 +48,13 @@ echo [3/3] Build EXE serverpal...
 if %errorlevel% neq 0 (
     echo.
     echo [LOI] Build that bai.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
 echo.
 echo [OK] Da tao: dist\Manager_ServerPal_App.exe
 echo.
-pause
+if not defined NO_PAUSE pause
 exit /b 0
 

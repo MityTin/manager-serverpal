@@ -20,7 +20,7 @@ echo [1/4] Kiem tra Python...
 if %errorlevel% neq 0 (
     echo [LOI] Khong tim thay Python.
     echo Hay cai Python 3.10+ roi chay lai.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -28,7 +28,7 @@ echo [2/4] Cai dat PyInstaller...
 %PY_EXE% -m pip install --disable-pip-version-check --upgrade pyinstaller >nul
 if %errorlevel% neq 0 (
     echo [LOI] Khong cai duoc PyInstaller.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -54,7 +54,7 @@ echo [4/4] Build EXE...
 if %errorlevel% neq 0 (
     echo.
     echo [LOI] Build that bai.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -62,6 +62,6 @@ echo.
 echo [OK] Da tao: dist\Manager_ServerPal.exe
 echo Ban co the gui file EXE nay cho nguoi dung tai va chay truc tiep.
 echo.
-pause
+if not defined NO_PAUSE pause
 exit /b 0
 

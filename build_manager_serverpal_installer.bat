@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul
 setlocal EnableDelayedExpansion
 cd /d "%~dp0"
@@ -14,7 +14,7 @@ if not exist "dist\Manager_ServerPal.exe" (
     echo Hay build EXE setup truoc bang:
     echo   build_manager_serverpal_exe.bat
     echo.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 if not exist "dist\Manager_ServerPal_App.exe" (
@@ -22,7 +22,7 @@ if not exist "dist\Manager_ServerPal_App.exe" (
     echo Hay build EXE serverpal truoc bang:
     echo   build_manager_serverpal_app_exe.bat
     echo.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -43,7 +43,7 @@ if "!ISCC_EXE!"=="" (
     echo Cai Inno Setup 6 tai: https://jrsoftware.org/isdl.php
     echo Sau do chay lai file nay.
     echo.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
@@ -54,14 +54,15 @@ echo [1/1] Dang build installer...
 if %errorlevel% neq 0 (
     echo.
     echo [LOI] Build installer that bai.
-    pause
+    if not defined NO_PAUSE pause
     exit /b 1
 )
 
 echo.
 echo [OK] Da tao installer tai:
-echo   release\Manager_ServerPal_Setup_v1.0.1.exe
+echo   release\Manager_ServerPal_Setup_v1.0.2.exe
 echo.
-pause
+if not defined NO_PAUSE pause
 exit /b 0
+
 

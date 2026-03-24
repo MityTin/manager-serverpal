@@ -1,11 +1,11 @@
-"""
-Manager ServerPal — Setup & Launcher
-Chức năng:
-  • Đọc / ghi manager_config.json (tương đương AppConfig)
-  • Tạo config mới từ template
-  • Khởi chạy serverpal.py
-  • Cập nhật PalServer qua SteamCMD (App ID 2394010)
-  • Cài đặt Python + Node.js packages
+﻿"""
+Manager ServerPal â€” Setup & Launcher
+Chá»©c nÄƒng:
+  â€¢ Äá»c / ghi manager_config.json (tÆ°Æ¡ng Ä‘Æ°Æ¡ng AppConfig)
+  â€¢ Táº¡o config má»›i tá»« template
+  â€¢ Khá»Ÿi cháº¡y serverpal.py
+  â€¢ Cáº­p nháº­t PalServer qua SteamCMD (App ID 2394010)
+  â€¢ CÃ i Ä‘áº·t Python + Node.js packages
 """
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, scrolledtext
@@ -29,10 +29,10 @@ import traceback
 import hashlib
 import webbrowser
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Hide console window when launched via `python.exe`
 # (e.g. double-click `setup.py` on Windows).
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def _hide_console_if_present() -> None:
     try:
         import ctypes as _ctypes
@@ -53,7 +53,7 @@ try:
 except ImportError:
     _PIL_AVAILABLE = False
 
-# Optional: py7zr (7z), rarfile (rar) — cài qua pip install -r requirements.txt
+# Optional: py7zr (7z), rarfile (rar) â€” cÃ i qua pip install -r requirements.txt
 try:
     import py7zr as _py7zr; HAS_PY7ZR = True
 except ImportError:
@@ -63,19 +63,19 @@ try:
 except ImportError:
     HAS_RAR = False
 
-# ─────────────────────────────────────────────
-#  ADMIN CHECK (không tự nâng quyền)
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  ADMIN CHECK (khÃ´ng tá»± nÃ¢ng quyá»n)
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 try:
     IS_ADMIN = bool(ctypes.windll.shell32.IsUserAnAdmin())
 except Exception:
     IS_ADMIN = False
 
-# ─────────────────────────────────────────────
-#  ĐƯỜNG DẪN
-# ─────────────────────────────────────────────
-# Khi chạy dạng .py: APP_DIR = thư mục source.
-# Khi chạy dạng PyInstaller one-file: APP_DIR = thư mục chứa .exe, còn BUNDLE_DIR = thư mục tạm giải nén.
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  ÄÆ¯á»œNG DáºªN
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Khi cháº¡y dáº¡ng .py: APP_DIR = thÆ° má»¥c source.
+# Khi cháº¡y dáº¡ng PyInstaller one-file: APP_DIR = thÆ° má»¥c chá»©a .exe, cÃ²n BUNDLE_DIR = thÆ° má»¥c táº¡m giáº£i nÃ©n.
 if getattr(sys, "frozen", False):
     APP_DIR = os.path.dirname(os.path.abspath(sys.executable))
     BUNDLE_DIR = getattr(sys, "_MEIPASS", APP_DIR)
@@ -99,17 +99,17 @@ UI_ICON_PNG = os.path.join(UI_ASSETS_DIR, "app_icon.png")
 UI_BG_JPG   = os.path.join(UI_ASSETS_DIR, "app_background.jpg")
 MANAGER_PAL_SETTINGS_INI = os.path.join(BUNDLE_DIR, "PalWorldSettings.ini")
 
-# App ID Palworld Dedicated Server trên Steam
+# App ID Palworld Dedicated Server trÃªn Steam
 PALWORLD_APPID = "2394010"
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"
 DEFAULT_SERVER_ROOT = r"C:\palwordsteamserver"
 DEFAULT_SERVER_EXE = os.path.join(DEFAULT_SERVER_ROOT, "steamapps", "common", "PalServer", "PalServer.exe")
 
-# ─────────────────────────────────────────────
-#  CONFIG TEMPLATE (dùng khi tạo config mới)
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  CONFIG TEMPLATE (dÃ¹ng khi táº¡o config má»›i)
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 CONFIG_TEMPLATE = {
-    "_":                    "Manager ServerPal — v1.0.1 by MityTinDev. Chỉnh giá trị bên dưới rồi chạy: python serverpal.py",
+    "_":                    "Manager ServerPal â€” v1.0.2 by MityTinDev. Chá»‰nh giÃ¡ trá»‹ bÃªn dÆ°á»›i rá»“i cháº¡y: python serverpal.py",
     "SERVER_EXE":           DEFAULT_SERVER_EXE,
     "API_URL":              "http://127.0.0.1:8212/v1/api",
     "ADMIN_PASSWORD":       "Admin#123",
@@ -134,7 +134,7 @@ CONFIG_TEMPLATE = {
     "DISCORD_BOT2_CHANNEL_ID": "",
     "DISCORD_BOT2_RANKING_CHANNEL_ID": "",
     "DISCORD_BOT2_LIVEMAP_CHANNEL_ID": "",
-    "DISCORD_BOT2_NAME":    "Cờ Hó",
+    "DISCORD_BOT2_NAME":    "Cá» HÃ³",
     "ANTIBUG_MAX_KICKS":    "3",
     "ANTIBUG_KICK_WINDOW":  "300",
     "STEAMCMD_EXE":         r"C:\steamcmd\steamcmd.exe",
@@ -143,7 +143,7 @@ CONFIG_TEMPLATE = {
 }
 
 def _normalize_shared_admin_password(data: dict) -> dict:
-    """Đồng bộ mật khẩu admin dùng chung cho REST/RCON."""
+    """Äá»“ng bá»™ máº­t kháº©u admin dÃ¹ng chung cho REST/RCON."""
     result = dict(data or {})
     pwd = ""
     for key in ("AUTH_PASS", "RCON_PASSWORD", "ADMIN_PASSWORD"):
@@ -159,7 +159,7 @@ def _normalize_shared_admin_password(data: dict) -> dict:
     return result
 
 def _resolve_server_exe_path(path_hint: str) -> str:
-    """Chuẩn hóa SERVER_EXE từ file hoặc thư mục đã chọn."""
+    """Chuáº©n hÃ³a SERVER_EXE tá»« file hoáº·c thÆ° má»¥c Ä‘Ã£ chá»n."""
     if not path_hint:
         return ""
     p = os.path.abspath(str(path_hint).strip().strip('"'))
@@ -168,7 +168,7 @@ def _resolve_server_exe_path(path_hint: str) -> str:
     if os.path.isfile(p):
         if os.path.basename(p).lower() == "palserver.exe":
             return p
-        # Nếu user chọn nhầm file exe khác, thử dò PalServer.exe quanh thư mục đó.
+        # Náº¿u user chá»n nháº§m file exe khÃ¡c, thá»­ dÃ² PalServer.exe quanh thÆ° má»¥c Ä‘Ã³.
         base_dir = os.path.dirname(p)
         direct = os.path.join(base_dir, "PalServer.exe")
         if os.path.isfile(direct):
@@ -188,16 +188,16 @@ def _resolve_server_exe_path(path_hint: str) -> str:
                     return os.path.join(root, fn)
     return ""
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  MODS CATALOG
-#  target   : đường dẫn tương đối từ PalServer root (SERVER_EXE dir)
-#  probe    : file/folder để kiểm tra đã cài chưa (relative to PalServer root)
-#  toggle   : file rename để bật/tắt (relative to PalServer root), None = không hỗ trợ toggle
-# ─────────────────────────────────────────────
+#  target   : Ä‘Æ°á»ng dáº«n tÆ°Æ¡ng Ä‘á»‘i tá»« PalServer root (SERVER_EXE dir)
+#  probe    : file/folder Ä‘á»ƒ kiá»ƒm tra Ä‘Ã£ cÃ i chÆ°a (relative to PalServer root)
+#  toggle   : file rename Ä‘á»ƒ báº­t/táº¯t (relative to PalServer root), None = khÃ´ng há»— trá»£ toggle
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 MODS_CATALOG = [
     {
         "id":      "paldefender",
-        "icon":    "🛡",
+        "icon":    "ðŸ›¡",
         "name":    "PalDefender",
         "desc":    "Anti-cheat, cheat detection & server protection plugin",
         "version": "Latest",
@@ -205,7 +205,7 @@ MODS_CATALOG = [
         "target":  os.path.join("Pal", "Binaries", "Win64"),
         "probe":   os.path.join("Pal", "Binaries", "Win64", "PalDefender.dll"),
         "toggle":  os.path.join("Pal", "Binaries", "Win64", "PalDefender.dll"),
-        # Nhận diện/gỡ rõ theo bộ file PalDefender thực tế.
+        # Nháº­n diá»‡n/gá»¡ rÃµ theo bá»™ file PalDefender thá»±c táº¿.
         "uninstall_files": [
             os.path.join("Pal", "Binaries", "Win64", "PalDefender.dll"),
             os.path.join("Pal", "Binaries", "Win64", "PalDefender"),
@@ -216,16 +216,16 @@ MODS_CATALOG = [
     },
     {
         "id":      "ue4ss",
-        "icon":    "🔧",
+        "icon":    "ðŸ”§",
         "name":    "UE4SS v3.0.1",
-        "desc":    "Unreal Engine Script System — mod loading framework",
+        "desc":    "Unreal Engine Script System â€” mod loading framework",
         "version": "3.0.1-938",
         "url":     "https://drive.google.com/file/d/1zSvqZKi1V6akVFZCs20DkceU-RP--ZSV/view?usp=sharing",
         "target":  os.path.join("Pal", "Binaries", "Win64"),
-        # UE4SS quản lý độc lập theo dwmapi.dll.
+        # UE4SS quáº£n lÃ½ Ä‘á»™c láº­p theo dwmapi.dll.
         "probe":   os.path.join("Pal", "Binaries", "Win64", "dwmapi.dll"),
         "toggle":  os.path.join("Pal", "Binaries", "Win64", "dwmapi.dll"),
-        # Theo yêu cầu: gỡ UE4SS chỉ cần xóa dwmapi.dll, không xóa thư mục khác.
+        # Theo yÃªu cáº§u: gá»¡ UE4SS chá»‰ cáº§n xÃ³a dwmapi.dll, khÃ´ng xÃ³a thÆ° má»¥c khÃ¡c.
         "uninstall_files": [
             os.path.join("Pal", "Binaries", "Win64", "dwmapi.dll"),
         ],
@@ -233,22 +233,22 @@ MODS_CATALOG = [
     },
 ]
 
-# ─────────────────────────────────────────────
-#  HELPER: đọc / ghi config
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  HELPER: Ä‘á»c / ghi config
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def load_config() -> dict:
     try:
         if os.path.isfile(CONFIG_FILE):
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
                 raw = json.load(f)
-            # Lọc bỏ comment key
+            # Lá»c bá» comment key
             clean = {k: v for k, v in raw.items()
                     if not k.startswith("//") and k != "_"}
             if "SERVER_EXE" in clean:
                 clean["SERVER_EXE"] = _resolve_server_exe_path(clean.get("SERVER_EXE", ""))
             return _normalize_shared_admin_password(clean)
     except Exception as e:
-        messagebox.showerror("Lỗi đọc config", str(e))
+        messagebox.showerror("Lá»—i Ä‘á»c config", str(e))
     return {}
 
 def save_config(data: dict) -> bool:
@@ -256,19 +256,19 @@ def save_config(data: dict) -> bool:
         data = _normalize_shared_admin_password(data)
         if "SERVER_EXE" in data:
             data["SERVER_EXE"] = _resolve_server_exe_path(data.get("SERVER_EXE", ""))
-        # Đọc file gốc để giữ lại comment keys
+        # Äá»c file gá»‘c Ä‘á»ƒ giá»¯ láº¡i comment keys
         existing = {}
         if os.path.isfile(CONFIG_FILE):
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
                 existing = json.load(f)
-        # Cập nhật chỉ các key thật
+        # Cáº­p nháº­t chá»‰ cÃ¡c key tháº­t
         for k, v in data.items():
             existing[k] = v
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(existing, f, ensure_ascii=False, indent=4)
         return True
     except Exception as e:
-        messagebox.showerror("Lỗi ghi config", str(e))
+        messagebox.showerror("Lá»—i ghi config", str(e))
         return False
 
 def create_new_config():
@@ -277,25 +277,25 @@ def create_new_config():
         initialfile="manager_config.json",
         defaultextension=".json",
         filetypes=[("JSON", "*.json"), ("All", "*.*")],
-        title="Tạo file config mới"
+        title="Táº¡o file config má»›i"
     )
     if not path:
         return
     try:
         with open(path, "w", encoding="utf-8") as f:
             json.dump(CONFIG_TEMPLATE, f, ensure_ascii=False, indent=4)
-        messagebox.showinfo("Thành công", f"Đã tạo config mới:\n{path}")
+        messagebox.showinfo("ThÃ nh cÃ´ng", f"ÄÃ£ táº¡o config má»›i:\n{path}")
     except Exception as e:
-        messagebox.showerror("Lỗi", str(e))
+        messagebox.showerror("Lá»—i", str(e))
 
-# ─────────────────────────────────────────────
-#  INSTALLER WINDOW (Tích hợp create_server)
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  INSTALLER WINDOW (TÃ­ch há»£p create_server)
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class InstallerWindow(tk.Toplevel):
     def __init__(self, parent, on_success=None):
         super().__init__(parent)
         self.on_success = on_success
-        self.title("Manager ServerPal — Server Installer Wizard")
+        self.title("Manager ServerPal â€” Server Installer Wizard")
         self.geometry("720x550")
         self.configure(bg="#0a0a0a")
         self.resizable(False, False)
@@ -321,34 +321,34 @@ class InstallerWindow(tk.Toplevel):
     def _build_ui(self):
         hdr = tk.Frame(self, bg="#111", pady=15)
         hdr.pack(fill="x")
-        tk.Label(hdr, text="🚀  MANAGER SERVERPAL INSTALLER", bg="#111", fg="#00ffcc",
+        tk.Label(hdr, text="ðŸš€  MANAGER SERVERPAL INSTALLER", bg="#111", fg="#00ffcc",
                  font=("Segoe UI", 16, "bold")).pack()
 
         body = tk.Frame(self, bg="#0a0a0a", padx=20, pady=20)
         body.pack(fill="both", expand=True)
 
-        tk.Label(body, text="1. Thư mục cài SteamCMD:", bg="#0a0a0a", fg="#aaa", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(body, text="1. ThÆ° má»¥c cÃ i SteamCMD:", bg="#0a0a0a", fg="#aaa", font=("Segoe UI", 9)).pack(anchor="w")
         f1 = tk.Frame(body, bg="#0a0a0a")
         f1.pack(fill="x", pady=(2, 10))
         tk.Entry(f1, textvariable=self.steamcmd_dir, bg="#161616", fg="white",
                  bd=0, font=("Consolas", 10), insertbackground="white").pack(side="left", fill="x", expand=True, ipady=6, padx=(0, 5))
-        tk.Button(f1, text="📂", bg="#222", fg="white", relief="flat",
+        tk.Button(f1, text="ðŸ“‚", bg="#222", fg="white", relief="flat",
                   command=lambda: self._browse(self.steamcmd_dir)).pack(side="left")
 
-        tk.Label(body, text="2. Thư mục cài PalServer:", bg="#0a0a0a", fg="#aaa", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(body, text="2. ThÆ° má»¥c cÃ i PalServer:", bg="#0a0a0a", fg="#aaa", font=("Segoe UI", 9)).pack(anchor="w")
         f2 = tk.Frame(body, bg="#0a0a0a")
         f2.pack(fill="x", pady=(2, 15))
         tk.Entry(f2, textvariable=self.install_dir, bg="#161616", fg="white",
                  bd=0, font=("Consolas", 10), insertbackground="white").pack(side="left", fill="x", expand=True, ipady=6, padx=(0, 5))
-        tk.Button(f2, text="📂", bg="#222", fg="white", relief="flat",
+        tk.Button(f2, text="ðŸ“‚", bg="#222", fg="white", relief="flat",
                   command=lambda: self._browse(self.install_dir)).pack(side="left")
 
-        self.btn_install = tk.Button(body, text="⬇  BẮT ĐẦU CÀI ĐẶT", bg="#006644", fg="white",
+        self.btn_install = tk.Button(body, text="â¬‡  Báº®T Äáº¦U CÃ€I Äáº¶T", bg="#006644", fg="white",
                                      font=("Segoe UI", 11, "bold"), relief="flat", pady=10,
                                      cursor="hand2", command=self._start_install)
         self.btn_install.pack(fill="x", pady=(0, 15))
 
-        tk.Label(body, text="Tiến trình:", bg="#0a0a0a", fg="#666", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(body, text="Tiáº¿n trÃ¬nh:", bg="#0a0a0a", fg="#666", font=("Segoe UI", 9)).pack(anchor="w")
         self.console = scrolledtext.ScrolledText(body, bg="#050505", fg="#00ff88",
                                                  font=("Consolas", 9), bd=0, height=12)
         self.console.pack(fill="both", expand=True)
@@ -362,9 +362,9 @@ class InstallerWindow(tk.Toplevel):
         self.console.see(tk.END)
 
     def _log_update(self, msg):
-        """Cập nhật dòng cuối (cho hiệu ứng progress bar)."""
+        """Cáº­p nháº­t dÃ²ng cuá»‘i (cho hiá»‡u á»©ng progress bar)."""
         if self.console.index("end-1c") != "1.0":
-            # Xóa dòng cuối cũ
+            # XÃ³a dÃ²ng cuá»‘i cÅ©
             self.console.delete("end-2l linestart", "end-1c")
         self.console.insert(tk.END, msg + "\n")
         self.console.see(tk.END)
@@ -381,7 +381,7 @@ class InstallerWindow(tk.Toplevel):
         if not self.is_installing: return
         chars = ["|", "/", "-", "\\"]
         c = chars[self._spin_idx % 4]
-        self.btn_install.config(text=f"⏳ {c} ĐANG CÀI ĐẶT...")
+        self.btn_install.config(text=f"â³ {c} ÄANG CÃ€I Äáº¶T...")
         self._spin_idx += 1
         self.after(100, self._animate_spin)
 
@@ -391,7 +391,7 @@ class InstallerWindow(tk.Toplevel):
         try:
             os.makedirs(s_dir, exist_ok=True); os.makedirs(p_dir, exist_ok=True)
             if not os.path.isfile(s_exe):
-                self._log(f"⬇ Bắt đầu tải SteamCMD...")
+                self._log(f"â¬‡ Báº¯t Ä‘áº§u táº£i SteamCMD...")
                 zip_url = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
                 zip_path = os.path.join(s_dir, "steamcmd.zip")
                 
@@ -408,13 +408,13 @@ class InstallerWindow(tk.Toplevel):
                         if total:
                             pct = int(downloaded * 100 / total)
                             if pct % 5 == 0: # Update UI every 5%
-                                self._log_update(f"⏳ Downloading SteamCMD: {pct}%")
+                                self._log_update(f"â³ Downloading SteamCMD: {pct}%")
                 
-                self._log("📦 Đang giải nén SteamCMD...")
+                self._log("ðŸ“¦ Äang giáº£i nÃ©n SteamCMD...")
                 with zipfile.ZipFile(zip_path, 'r') as z: z.extractall(s_dir)
                 os.remove(zip_path)
             
-            self._log("🚀 Đang chạy SteamCMD để cài PalServer (2394010)...")
+            self._log("ðŸš€ Äang cháº¡y SteamCMD Ä‘á»ƒ cÃ i PalServer (2394010)...")
             cmd = [s_exe, "+login", "anonymous", "+force_install_dir", p_dir, "+app_update", "2394010", "validate", "+quit"]
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace', creationflags=subprocess.CREATE_NO_WINDOW, bufsize=1)
             
@@ -441,26 +441,26 @@ class InstallerWindow(tk.Toplevel):
                     self._import_default_palworld_settings(p_dir, final_exe)
                     self._update_config(final_exe, s_exe)
                     self.is_installing = False
-                    self.btn_install.config(text="✅ HOÀN TẤT - ĐÓNG", bg="#004400", command=self.destroy, state="normal")
-                    self._log("\n" + "═"*40)
-                    self._log("🎉  CÀI ĐẶT THÀNH CÔNG!  🎉")
-                    self._log(f"📂  Server: {final_exe}")
-                    self._log("═"*40 + "\n")
+                    self.btn_install.config(text="âœ… HOÃ€N Táº¤T - ÄÃ“NG", bg="#004400", command=self.destroy, state="normal")
+                    self._log("\n" + "â•"*40)
+                    self._log("ðŸŽ‰  CÃ€I Äáº¶T THÃ€NH CÃ”NG!  ðŸŽ‰")
+                    self._log(f"ðŸ“‚  Server: {final_exe}")
+                    self._log("â•"*40 + "\n")
                     if self.on_success: self.on_success()
-                    messagebox.showinfo("Thành công", "Cài đặt và cấu hình hoàn tất!")
-                else: self._log("⚠️ Không tìm thấy PalServer.exe!")
-            else: self._log(f"❌ Lỗi code {proc.returncode}")
-        except Exception as e: self._log(f"❌ Lỗi: {e}")
+                    messagebox.showinfo("ThÃ nh cÃ´ng", "CÃ i Ä‘áº·t vÃ  cáº¥u hÃ¬nh hoÃ n táº¥t!")
+                else: self._log("âš ï¸ KhÃ´ng tÃ¬m tháº¥y PalServer.exe!")
+            else: self._log(f"âŒ Lá»—i code {proc.returncode}")
+        except Exception as e: self._log(f"âŒ Lá»—i: {e}")
         self.is_installing = False
-        if self.btn_install['state'] == 'disabled' and self.btn_install['text'] != "✅ HOÀN TẤT - ĐÓNG":
-             self.btn_install.config(text="❌ THỬ LẠI", bg="#660000", state="normal")
+        if self.btn_install['state'] == 'disabled' and self.btn_install['text'] != "âœ… HOÃ€N Táº¤T - ÄÃ“NG":
+             self.btn_install.config(text="âŒ THá»¬ Láº I", bg="#660000", state="normal")
 
     def _update_config(self, exe, steam):
         cfg = load_config(); cfg["SERVER_EXE"] = exe; cfg["STEAMCMD_EXE"] = steam
-        save_config(cfg); self._log("✅ Đã cập nhật config")
+        save_config(cfg); self._log("âœ… ÄÃ£ cáº­p nháº­t config")
 
     def _find_default_palworld_settings(self, install_dir: str, server_exe: str) -> str:
-        """Tìm DefaultPalWorldSettings.ini trong thư mục cài game."""
+        """TÃ¬m DefaultPalWorldSettings.ini trong thÆ° má»¥c cÃ i game."""
         exe_dir = os.path.dirname(server_exe)
         candidates = [
             os.path.join(exe_dir, "Pal", "Saved", "Config", "WindowsServer", "DefaultPalWorldSettings.ini"),
@@ -476,10 +476,10 @@ class InstallerWindow(tk.Toplevel):
         return ""
 
     def _import_default_palworld_settings(self, install_dir: str, server_exe: str) -> bool:
-        """Copy DefaultPalWorldSettings.ini -> PalWorldSettings.ini làm cấu hình mặc định."""
+        """Copy DefaultPalWorldSettings.ini -> PalWorldSettings.ini lÃ m cáº¥u hÃ¬nh máº·c Ä‘á»‹nh."""
         src = self._find_default_palworld_settings(install_dir, server_exe)
         if not src:
-            self._log("⚠️ Không tìm thấy DefaultPalWorldSettings.ini, bỏ qua bước import mặc định.")
+            self._log("âš ï¸ KhÃ´ng tÃ¬m tháº¥y DefaultPalWorldSettings.ini, bá» qua bÆ°á»›c import máº·c Ä‘á»‹nh.")
             return False
 
         dst = os.path.join(
@@ -492,15 +492,15 @@ class InstallerWindow(tk.Toplevel):
             ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             backup = f"{dst}.bak_{ts}"
             shutil.copy2(dst, backup)
-            self._log(f"🗂️ Đã backup PalWorldSettings.ini -> {backup}")
+            self._log(f"ðŸ—‚ï¸ ÄÃ£ backup PalWorldSettings.ini -> {backup}")
 
         shutil.copy2(src, dst)
-        self._log(f"✅ Đã import cấu hình mặc định:\n   {src}\n   -> {dst}")
+        self._log(f"âœ… ÄÃ£ import cáº¥u hÃ¬nh máº·c Ä‘á»‹nh:\n   {src}\n   -> {dst}")
         return True
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  MAIN APP
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class SetupApp:
     BG       = "#0c120d"
     BG2      = "#121a14"
@@ -518,7 +518,7 @@ class SetupApp:
 
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("Manager ServerPal — Setup & Launcher")
+        self.root.title("Manager ServerPal â€” Setup & Launcher")
         self.root.geometry("920x700")
         self.root.minsize(900, 620)
         self.root.configure(bg=self.BG)
@@ -537,32 +537,32 @@ class SetupApp:
         self._latest_update_payload = None
         self._last_ui_bucket = None
         self.root.bind("<Configure>", self._on_root_resize, add="+")
-        # Lần đầu mở setup: tự kiểm tra requirements và chỉ cài các gói còn thiếu.
+        # Láº§n Ä‘áº§u má»Ÿ setup: tá»± kiá»ƒm tra requirements vÃ  chá»‰ cÃ i cÃ¡c gÃ³i cÃ²n thiáº¿u.
         self.root.after(400, self._auto_install_requirements_if_needed)
-        # Auto-check update app (GitHub Releases) nếu người dùng bật.
+        # Auto-check update app (GitHub Releases) náº¿u ngÆ°á»i dÃ¹ng báº­t.
         self.root.after(1600, self._auto_check_app_update_once)
 
     def _apply_window_branding(self):
-        """Nạp icon cho app; background image đang tắt để giảm lag."""
+        """Náº¡p icon cho app; background image Ä‘ang táº¯t Ä‘á»ƒ giáº£m lag."""
         try:
             if os.path.isfile(UI_ICON_PNG):
                 self._icon_img = tk.PhotoImage(file=UI_ICON_PNG)
                 self.root.iconphoto(True, self._icon_img)
         except Exception:
             pass
-        # Tắt nền ảnh để startup nhẹ và ổn định hơn.
+        # Táº¯t ná»n áº£nh Ä‘á»ƒ startup nháº¹ vÃ  á»•n Ä‘á»‹nh hÆ¡n.
         self._bg_source_img = None
         self._bg_photo = None
         self._bg_label = None
 
     def _attach_tab_background(self, tab_frame):
-        """Đặt background image trực tiếp vào từng tab để luôn nhìn thấy."""
-        # Background image đã tắt.
+        """Äáº·t background image trá»±c tiáº¿p vÃ o tá»«ng tab Ä‘á»ƒ luÃ´n nhÃ¬n tháº¥y."""
+        # Background image Ä‘Ã£ táº¯t.
         return
         bg_lbl = tk.Label(tab_frame, bd=0)
         bg_lbl.place(x=0, y=0, relwidth=1, relheight=1)
         bg_lbl.lower()
-        # Debounce để tránh resize PIL quá nhiều lần khi window/tab đang "nhúc nhích".
+        # Debounce Ä‘á»ƒ trÃ¡nh resize PIL quÃ¡ nhiá»u láº§n khi window/tab Ä‘ang "nhÃºc nhÃ­ch".
         self._tab_bg_refs[tab_frame] = {
             "label": bg_lbl,
             "photo": None,
@@ -576,15 +576,15 @@ class SetupApp:
                     return
                 w = max(int(f.winfo_width()), 200)
                 h = max(int(f.winfo_height()), 200)
-                # Giới hạn size để giảm tải khi cửa sổ lớn / resize nhiều lần.
+                # Giá»›i háº¡n size Ä‘á»ƒ giáº£m táº£i khi cá»­a sá»• lá»›n / resize nhiá»u láº§n.
                 w = min(w, 1000)
                 h = min(h, 800)
-                # Skip nếu kích thước gần như không đổi.
+                # Skip náº¿u kÃ­ch thÆ°á»›c gáº§n nhÆ° khÃ´ng Ä‘á»•i.
                 last_w, last_h = self._tab_bg_refs.get(f, {}).get("last_size", (0, 0))
                 if abs(w - last_w) < 20 and abs(h - last_h) < 20:
                     return
 
-                # Dùng resample nhanh hơn cho UI (giảm lag đáng kể).
+                # DÃ¹ng resample nhanh hÆ¡n cho UI (giáº£m lag Ä‘Ã¡ng ká»ƒ).
                 img = self._bg_source_img.resize((w, h), Image.BILINEAR)
                 ph = ImageTk.PhotoImage(img)
                 ref = self._tab_bg_refs.get(f)
@@ -612,12 +612,12 @@ class SetupApp:
                 pass
 
         tab_frame.bind("<Configure>", _on_configure, add="+")
-        # Refresh lần đầu (không cần debounce)
+        # Refresh láº§n Ä‘áº§u (khÃ´ng cáº§n debounce)
         self.root.after(50, _refresh_bg)
 
 
     def _parse_requirements(self) -> list[tuple[str, str]]:
-        """Trả về list (package_name, full_spec) từ requirements.txt."""
+        """Tráº£ vá» list (package_name, full_spec) tá»« requirements.txt."""
         reqs: list[tuple[str, str]] = []
         if not os.path.isfile(REQ_FILE):
             return reqs
@@ -627,22 +627,22 @@ class SetupApp:
                     line = raw.strip()
                     if not line or line.startswith("#"):
                         continue
-                    # Cắt phần marker/comment inline đơn giản.
+                    # Cáº¯t pháº§n marker/comment inline Ä‘Æ¡n giáº£n.
                     line = line.split(" #", 1)[0].strip()
-                    # Tách tên package trước version operators.
+                    # TÃ¡ch tÃªn package trÆ°á»›c version operators.
                     pkg = re.split(r"[<>=!~\[\];\s]", line, maxsplit=1)[0].strip()
                     if pkg:
                         reqs.append((pkg, line))
         except Exception as e:
-            self._log(f"⚠️ Không đọc được requirements.txt: {e}")
+            self._log(f"âš ï¸ KhÃ´ng Ä‘á»c Ä‘Æ°á»£c requirements.txt: {e}")
         return reqs
 
     def _get_python_exec(self, ensure_venv: bool = False) -> str:
-        """Ưu tiên Python trong .venv của project; fallback sys.executable."""
+        """Æ¯u tiÃªn Python trong .venv cá»§a project; fallback sys.executable."""
         is_frozen = bool(getattr(sys, "frozen", False))
         if os.path.isfile(VENV_PYTHON):
-            # VENV_PYTHON có thể là venv "hỏng" (trỏ về base python đã bị xoá/di chuyển),
-            # ví dụ khi chạy sẽ in "No Python at '...'" và exit code != 0.
+            # VENV_PYTHON cÃ³ thá»ƒ lÃ  venv "há»ng" (trá» vá» base python Ä‘Ã£ bá»‹ xoÃ¡/di chuyá»ƒn),
+            # vÃ­ dá»¥ khi cháº¡y sáº½ in "No Python at '...'" vÃ  exit code != 0.
             try:
                 r = subprocess.run(
                     [VENV_PYTHON, "--version"],
@@ -654,9 +654,9 @@ class SetupApp:
                     return VENV_PYTHON
             except Exception:
                 pass
-            # Nếu venv python không chạy được: dọn venv cũ để tạo lại.
+            # Náº¿u venv python khÃ´ng cháº¡y Ä‘Æ°á»£c: dá»n venv cÅ© Ä‘á»ƒ táº¡o láº¡i.
             try:
-                self._log("⚠️ .venv cũ không hợp lệ — đang xóa và tạo lại...")
+                self._log("âš ï¸ .venv cÅ© khÃ´ng há»£p lá»‡ â€” Ä‘ang xÃ³a vÃ  táº¡o láº¡i...")
             except Exception:
                 pass
             try:
@@ -669,7 +669,7 @@ class SetupApp:
 
         def _resolve_base_python_exec() -> str:
             cand = []
-            # 1) sys.executable chỉ dùng khi chạy dạng .py (không dùng khi frozen .exe)
+            # 1) sys.executable chá»‰ dÃ¹ng khi cháº¡y dáº¡ng .py (khÃ´ng dÃ¹ng khi frozen .exe)
             if not is_frozen:
                 cand.append(_norm(sys.executable))
             # 2) python.exe trong PATH
@@ -680,13 +680,13 @@ class SetupApp:
             except Exception:
                 pass
 
-            # 3) Các đường dẫn cài đặt Python thông dụng (Windows)
+            # 3) CÃ¡c Ä‘Æ°á»ng dáº«n cÃ i Ä‘áº·t Python thÃ´ng dá»¥ng (Windows)
             try:
                 cand.extend(glob.glob(r"C:\Program Files\Python*\python.exe"))
             except Exception:
                 pass
             try:
-                # Ví dụ: C:\Users\<user>\AppData\Local\Programs\Python\Python312\python.exe
+                # VÃ­ dá»¥: C:\Users\<user>\AppData\Local\Programs\Python\Python312\python.exe
                 cand.extend(glob.glob(r"C:\Users\*\AppData\Local\Programs\Python\Python*\python.exe"))
             except Exception:
                 pass
@@ -695,9 +695,9 @@ class SetupApp:
             for p in cand:
                 if p and os.path.isfile(p):
                     return p
-            # Fallback cuối:
-            # - chạy .py: giữ sys.executable
-            # - chạy .exe: trả rỗng để caller xử lý (tránh tự gọi lại chính file .exe)
+            # Fallback cuá»‘i:
+            # - cháº¡y .py: giá»¯ sys.executable
+            # - cháº¡y .exe: tráº£ rá»—ng Ä‘á»ƒ caller xá»­ lÃ½ (trÃ¡nh tá»± gá»i láº¡i chÃ­nh file .exe)
             if not is_frozen:
                 return _norm(sys.executable)
             return ""
@@ -707,21 +707,21 @@ class SetupApp:
         if not ensure_venv:
             return base_python
         if not base_python:
-            self._log("❌ Không tìm thấy Python interpreter hệ thống để tạo .venv.")
+            self._log("âŒ KhÃ´ng tÃ¬m tháº¥y Python interpreter há»‡ thá»‘ng Ä‘á»ƒ táº¡o .venv.")
             return ""
         try:
-            self._log("🐍 Đang tạo Python virtual environment (.venv)...")
-            # Dùng base_python đã dò được để tránh trường hợp sys.executable trỏ tới path đã bị xóa.
+            self._log("ðŸ Äang táº¡o Python virtual environment (.venv)...")
+            # DÃ¹ng base_python Ä‘Ã£ dÃ² Ä‘Æ°á»£c Ä‘á»ƒ trÃ¡nh trÆ°á»ng há»£p sys.executable trá» tá»›i path Ä‘Ã£ bá»‹ xÃ³a.
             subprocess.run([base_python, "-m", "venv", VENV_DIR], check=True, timeout=180)
             if os.path.isfile(VENV_PYTHON):
-                self._log(f"✅ Đã tạo venv: {VENV_DIR}")
+                self._log(f"âœ… ÄÃ£ táº¡o venv: {VENV_DIR}")
                 return VENV_PYTHON
         except Exception as e:
-            self._log(f"⚠️ Tạo venv lỗi, fallback Python base: {e}")
+            self._log(f"âš ï¸ Táº¡o venv lá»—i, fallback Python base: {e}")
         return base_python
 
     def _get_missing_requirements(self, python_exec: str) -> list[str]:
-        """Lấy danh sách requirement specs còn thiếu cài đặt."""
+        """Láº¥y danh sÃ¡ch requirement specs cÃ²n thiáº¿u cÃ i Ä‘áº·t."""
         missing: list[str] = []
         for pkg_name, full_spec in self._parse_requirements():
             try:
@@ -732,15 +732,15 @@ class SetupApp:
                 if r.returncode != 0:
                     missing.append(full_spec)
             except Exception:
-                # Nếu lỗi kiểm tra, vẫn xem như thiếu để pip xử lý.
+                # Náº¿u lá»—i kiá»ƒm tra, váº«n xem nhÆ° thiáº¿u Ä‘á»ƒ pip xá»­ lÃ½.
                 missing.append(full_spec)
         return missing
 
     def _auto_install_requirements_if_needed(self):
-        """Auto cài pip packages còn thiếu khi mở setup.py lần đầu."""
+        """Auto cÃ i pip packages cÃ²n thiáº¿u khi má»Ÿ setup.py láº§n Ä‘áº§u."""
         if IS_FROZEN_APP:
-            # Bản phát hành EXE cho end-user: không yêu cầu Python/pip trên máy đích.
-            self._log("ℹ️ Bản đóng gói: bỏ qua auto-install Python packages.")
+            # Báº£n phÃ¡t hÃ nh EXE cho end-user: khÃ´ng yÃªu cáº§u Python/pip trÃªn mÃ¡y Ä‘Ã­ch.
+            self._log("â„¹ï¸ Báº£n Ä‘Ã³ng gÃ³i: bá» qua auto-install Python packages.")
             return
         if self._auto_pip_running:
             return
@@ -748,18 +748,18 @@ class SetupApp:
             return
 
         py_exec = self._get_python_exec(ensure_venv=True)
-        # Tránh lỗi do quote/whitespace lạ trong đường dẫn python
+        # TrÃ¡nh lá»—i do quote/whitespace láº¡ trong Ä‘Æ°á»ng dáº«n python
         py_exec = str(py_exec).strip().strip('"').strip("'")
         if not py_exec:
-            self._log("⚠️ Bỏ qua auto-install: chưa tìm thấy Python hệ thống.")
+            self._log("âš ï¸ Bá» qua auto-install: chÆ°a tÃ¬m tháº¥y Python há»‡ thá»‘ng.")
             return
         missing = self._get_missing_requirements(py_exec)
         if not missing:
-            self._log("✅ Python packages đã đủ, bỏ qua auto-install.")
+            self._log("âœ… Python packages Ä‘Ã£ Ä‘á»§, bá» qua auto-install.")
             return
 
         self._auto_pip_running = True
-        self._log("📦 Phát hiện package còn thiếu, bắt đầu auto-install...")
+        self._log("ðŸ“¦ PhÃ¡t hiá»‡n package cÃ²n thiáº¿u, báº¯t Ä‘áº§u auto-install...")
         self._log("   Missing: " + ", ".join(missing))
 
         cmd = [py_exec, "-m", "pip", "install", "--disable-pip-version-check", *missing]
@@ -774,15 +774,15 @@ class SetupApp:
 
         threading.Thread(target=_run, daemon=True).start()
 
-    # ── Build UI ──────────────────────────────
+    # â”€â”€ Build UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_ui(self):
         # Header
         hdr = tk.Frame(self.root, bg="#0d0d1a", pady=10)
         hdr.pack(fill="x")
-        tk.Label(hdr, text="⚙  Manager ServerPal — Setup & Launcher",
+        tk.Label(hdr, text="âš™  Manager ServerPal â€” Setup & Launcher",
                  bg="#0d0d1a", fg=self.ACCENT,
                  font=("Segoe UI", 14, "bold")).pack(side="left", padx=16)
-        tk.Label(hdr, text="Phiên bản v1.0.1 by MityTinDev",
+        tk.Label(hdr, text="PhiÃªn báº£n v1.0.2 by MityTinDev",
                  bg="#0d0d1a", fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(side="right", padx=16)
 
@@ -814,16 +814,16 @@ class SetupApp:
         nb = ttk.Notebook(self.root, style="S.TNotebook")
         nb.pack(fill="both", expand=True, padx=8, pady=(4, 0))
 
-        # ── Tab 1: Khởi chạy (bảng điều khiển) ─
+        # â”€â”€ Tab 1: Khá»Ÿi cháº¡y (báº£ng Ä‘iá»u khiá»ƒn) â”€
         tab_run = tk.Frame(nb, bg=self.BG)
         self._attach_tab_background(tab_run)
-        nb.add(tab_run, text="  Khởi chạy  ")
+        nb.add(tab_run, text="  Khá»Ÿi cháº¡y  ")
         self._build_tab_with_scroll(tab_run, self._build_launch_tab)
 
-        # ── Tab 2: Tạo server (tab chính, chứa tab con) ─
+        # â”€â”€ Tab 2: Táº¡o server (tab chÃ­nh, chá»©a tab con) â”€
         tab_setup_main = tk.Frame(nb, bg=self.BG)
         self._attach_tab_background(tab_setup_main)
-        nb.add(tab_setup_main, text="  Tạo server & Cấu Hình ")
+        nb.add(tab_setup_main, text="  Táº¡o server & Cáº¥u HÃ¬nh ")
 
         sub_style = ttk.Style()
         sub_style.configure("Sub.TNotebook", background=self.BG2, borderwidth=0)
@@ -839,12 +839,12 @@ class SetupApp:
 
         sub_tab_setup = tk.Frame(sub_nb, bg=self.BG)
         self._attach_tab_background(sub_tab_setup)
-        sub_nb.add(sub_tab_setup, text="  Tạo server  ")
+        sub_nb.add(sub_tab_setup, text="  Táº¡o server  ")
         self._build_tab_with_scroll(sub_tab_setup, self._build_server_setup_tab)
 
         sub_tab_cfg = tk.Frame(sub_nb, bg=self.BG)
         self._attach_tab_background(sub_tab_cfg)
-        sub_nb.add(sub_tab_cfg, text="  Cấu hình  ")
+        sub_nb.add(sub_tab_cfg, text="  Cáº¥u hÃ¬nh  ")
         self._build_tab_with_scroll(sub_tab_cfg, self._build_config_tab)
 
         sub_tab_mods = tk.Frame(sub_nb, bg=self.BG)
@@ -854,25 +854,25 @@ class SetupApp:
 
         sub_tab_upd = tk.Frame(sub_nb, bg=self.BG)
         self._attach_tab_background(sub_tab_upd)
-        sub_nb.add(sub_tab_upd, text="  Cập nhật  ")
+        sub_nb.add(sub_tab_upd, text="  Cáº­p nháº­t  ")
         self._build_tab_with_scroll(sub_tab_upd, self._build_update_tab)
 
-        # ── Tab 3: Cài đặt (đặt cuối) ─────────
+        # â”€â”€ Tab 3: CÃ i Ä‘áº·t (Ä‘áº·t cuá»‘i) â”€â”€â”€â”€â”€â”€â”€â”€â”€
         tab_ins = tk.Frame(nb, bg=self.BG)
         self._attach_tab_background(tab_ins)
-        nb.add(tab_ins, text="  Cài đặt  ")
+        nb.add(tab_ins, text="  CÃ i Ä‘áº·t  ")
         self._build_tab_with_scroll(tab_ins, self._build_install_tab)
 
         # Console chung (bottom)
         self._build_console()
 
     def _on_root_resize(self, _event=None):
-        """Responsive tab menu: giữ tab luôn dễ đọc khi đổi kích thước cửa sổ."""
+        """Responsive tab menu: giá»¯ tab luÃ´n dá»… Ä‘á»c khi Ä‘á»•i kÃ­ch thÆ°á»›c cá»­a sá»•."""
         try:
             w = self.root.winfo_width()
         except Exception:
             return
-        # Chia theo bucket để tránh reconfigure quá nhiều lần khi drag resize.
+        # Chia theo bucket Ä‘á»ƒ trÃ¡nh reconfigure quÃ¡ nhiá»u láº§n khi drag resize.
         if w >= 1200:
             bucket = "lg"
             font = ("Segoe UI", 10, "bold")
@@ -894,7 +894,7 @@ class SetupApp:
         except Exception:
             pass
 
-    # ── Helpers ───────────────────────────────
+    # â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _scrollable(self, parent) -> tk.Frame:
         wrap = tk.Frame(parent, bg=self.BG)
         wrap.pack(fill="both", expand=True)
@@ -915,7 +915,7 @@ class SetupApp:
         return inner
 
     def _build_tab_with_scroll(self, parent, build_fn):
-        """Bọc toàn bộ tab trong vùng cuộn để dùng được khi cửa sổ thu nhỏ."""
+        """Bá»c toÃ n bá»™ tab trong vÃ¹ng cuá»™n Ä‘á»ƒ dÃ¹ng Ä‘Æ°á»£c khi cá»­a sá»• thu nhá»."""
         wrap = tk.Frame(parent, bg=self.BG)
         wrap.pack(fill="both", expand=True)
         canvas = tk.Canvas(wrap, bg=self.BG, highlightthickness=0)
@@ -931,7 +931,7 @@ class SetupApp:
         inner.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.bind("<Configure>", lambda e: canvas.itemconfig(win_id, width=e.width))
 
-        # Cuộn chuột chỉ khi con trỏ đang ở trong tab đó.
+        # Cuá»™n chuá»™t chá»‰ khi con trá» Ä‘ang á»Ÿ trong tab Ä‘Ã³.
         def _bind_wheel(_e=None):
             canvas.bind_all("<MouseWheel>", _on_wheel)
         def _unbind_wheel(_e=None):
@@ -976,9 +976,9 @@ class SetupApp:
             def _toggle_pw():
                 hidden = is_hidden.get()
                 e.config(show="" if hidden else show)
-                eye_btn.config(text="🙈" if hidden else "👁")
+                eye_btn.config(text="ðŸ™ˆ" if hidden else "ðŸ‘")
                 is_hidden.set(not hidden)
-            eye_btn = tk.Button(parent, text="👁", bg="#1a1a2e", fg="#aaa",
+            eye_btn = tk.Button(parent, text="ðŸ‘", bg="#1a1a2e", fg="#aaa",
                                 relief="flat", padx=6, command=_toggle_pw)
             eye_btn.grid(row=row, column=2, padx=(0, 4))
         parent.columnconfigure(1, weight=1)
@@ -990,7 +990,7 @@ class SetupApp:
                     p = filedialog.askdirectory()
                 if p:
                     v.set(p)
-            tk.Button(parent, text="📂", bg="#1a1a2e", fg="#aaa",
+            tk.Button(parent, text="ðŸ“‚", bg="#1a1a2e", fg="#aaa",
                       relief="flat", padx=6, command=_browse
                       ).grid(row=row, column=3 if show else 2, padx=(0, 4))
         if note:
@@ -1000,156 +1000,156 @@ class SetupApp:
                                               3 if (browse or show) else 2),
                             sticky="w", padx=4)
 
-    # ── Tab Config ────────────────────────────
+    # â”€â”€ Tab Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_config_tab(self, parent):
         toolbar = tk.Frame(parent, bg=self.BG, pady=6)
         toolbar.pack(fill="x", padx=14)
-        tk.Button(toolbar, text="💾  Lưu cấu hình",
+        tk.Button(toolbar, text="ðŸ’¾  LÆ°u cáº¥u hÃ¬nh",
                   bg=self.BTN_OK, fg="white", relief="flat",
                   padx=16, pady=6, font=("Segoe UI", 10, "bold"),
                   cursor="hand2", command=self._save
                   ).pack(side="left", padx=(0, 8))
-        tk.Button(toolbar, text="🔄  Tải lại từ file",
+        tk.Button(toolbar, text="ðŸ”„  Táº£i láº¡i tá»« file",
                   bg="#2a2a2a", fg="#aaa", relief="flat",
                   padx=12, pady=6, font=("Segoe UI", 9),
                   cursor="hand2", command=self._load_to_ui
                   ).pack(side="left", padx=(0, 8))
-        tk.Button(toolbar, text="🆕  Tạo config mới",
+        tk.Button(toolbar, text="ðŸ†•  Táº¡o config má»›i",
                   bg="#2a1a0a", fg="#ff9900", relief="flat",
                   padx=12, pady=6, font=("Segoe UI", 9),
                   cursor="hand2", command=create_new_config
                   ).pack(side="left")
-        tk.Button(toolbar, text="📥  Đồng bộ INI từ manager",
+        tk.Button(toolbar, text="ðŸ“¥  Äá»“ng bá»™ INI tá»« manager",
                   bg="#1a3a1a", fg="#aaff77", relief="flat",
                   padx=12, pady=6, font=("Segoe UI", 9),
                   cursor="hand2", command=self._sync_manager_ini_to_game
                   ).pack(side="left", padx=(8, 0))
 
-        # Tab đã được bọc scroll từ ngoài, tránh scroll lồng nhau.
+        # Tab Ä‘Ã£ Ä‘Æ°á»£c bá»c scroll tá»« ngoÃ i, trÃ¡nh scroll lá»“ng nhau.
         inner = parent
 
         # [1] Server
-        s = self._section(inner, "  [1]  🖥️  Server")
+        s = self._section(inner, "  [1]  ðŸ–¥ï¸  Server")
         self._field(s, 0, "SERVER_EXE", "PalServer.exe", browse="file",
-                    note="Tất cả path PalServer tự tính từ đây")
-        # PalWorldSettings.ini — tự derive, hiển thị read-only
+                    note="Táº¥t cáº£ path PalServer tá»± tÃ­nh tá»« Ä‘Ã¢y")
+        # PalWorldSettings.ini â€” tá»± derive, hiá»ƒn thá»‹ read-only
         tk.Label(s, text="PalWorldSettings.ini", bg=self.BG2, fg=self.FG_DIM,
                  font=("Segoe UI", 9), width=28, anchor="e"
                  ).grid(row=1, column=0, sticky="e", padx=(0, 8), pady=3)
         self._lbl_ini_path = tk.Label(s,
-                 text="⬆ tự tính: <SERVER_EXE_DIR>\\Pal\\Saved\\Config\\WindowsServer\\PalWorldSettings.ini",
+                 text="â¬† tá»± tÃ­nh: <SERVER_EXE_DIR>\\Pal\\Saved\\Config\\WindowsServer\\PalWorldSettings.ini",
                  bg=self.BG2, fg="#444", font=("Consolas", 7), anchor="w")
         self._lbl_ini_path.grid(row=1, column=1, sticky="ew", columnspan=3, pady=3)
-        # Cập nhật label khi SERVER_EXE thay đổi
+        # Cáº­p nháº­t label khi SERVER_EXE thay Ä‘á»•i
         self._vars["SERVER_EXE"].trace_add("write", lambda *_: self._update_ini_label())
 
         # [2] REST API
-        s = self._section(inner, "  [2]  🌐  REST API")
-        self._field(s, 0, "API_URL",   "API URL",        note="Mặc định: http://127.0.0.1:8212/v1/api")
+        s = self._section(inner, "  [2]  ðŸŒ  REST API")
+        self._field(s, 0, "API_URL",   "API URL",        note="Máº·c Ä‘á»‹nh: http://127.0.0.1:8212/v1/api")
         self._field(s, 1, "ADMIN_PASSWORD", "Admin Password", show="*",
-                    note="Dùng chung cho REST API + RCON")
+                    note="DÃ¹ng chung cho REST API + RCON")
         self._field(s, 2, "RESTAPI_ENABLED", "REST API Enabled",
-                    note="true/false (đồng bộ vào RESTAPIEnabled)")
+                    note="true/false (Ä‘á»“ng bá»™ vÃ o RESTAPIEnabled)")
 
         # [3] RCON
-        s = self._section(inner, "  [3]  🔌  RCON")
-        self._field(s, 0, "RCON_HOST",     "Host",     note="127.0.0.1 nếu local")
-        self._field(s, 1, "RCON_PORT",     "Port",     note="RCONPort (mặc định 25575)")
+        s = self._section(inner, "  [3]  ðŸ”Œ  RCON")
+        self._field(s, 0, "RCON_HOST",     "Host",     note="127.0.0.1 náº¿u local")
+        self._field(s, 1, "RCON_PORT",     "Port",     note="RCONPort (máº·c Ä‘á»‹nh 25575)")
         self._field(s, 2, "RCON_ENABLED",  "RCON Enabled",
-                    note="true/false (đồng bộ vào RCONEnabled)")
+                    note="true/false (Ä‘á»“ng bá»™ vÃ o RCONEnabled)")
         self._field(s, 3, "PUBLIC_PORT",   "Public Port",
-                    note="PublicPort community server (mặc định 8211)")
+                    note="PublicPort community server (máº·c Ä‘á»‹nh 8211)")
         self._field(s, 4, "QUERY_PORT",    "Query Port",
-                    note="QueryPort (mặc định 27015)")
+                    note="QueryPort (máº·c Ä‘á»‹nh 27015)")
         tk.Label(s, text="RCON Password",
                  bg=self.BG2, fg=self.FG_DIM,
                  font=("Segoe UI", 9), width=28, anchor="e"
                  ).grid(row=5, column=0, sticky="e", padx=(0, 8), pady=3)
-        tk.Label(s, text="↳ dùng chung với AdminPassword ở mục REST API",
+        tk.Label(s, text="â†³ dÃ¹ng chung vá»›i AdminPassword á»Ÿ má»¥c REST API",
                  bg=self.BG2, fg="#777", font=("Segoe UI", 8), anchor="w"
                  ).grid(row=5, column=1, sticky="w", pady=3)
         self._field(s, 6, "SHOW_PLAYER_LIST", "Show Player List",
-                    note="true/false (đồng bộ vào bShowPlayerList)")
+                    note="true/false (Ä‘á»“ng bá»™ vÃ o bShowPlayerList)")
 
         # [4] PalDefender
-        s = self._section(inner, "  [4]  🛡️  PalDefender API")
+        s = self._section(inner, "  [4]  ðŸ›¡ï¸  PalDefender API")
         self._field(s, 0, "PALDEF_API_BASE", "API Base URL",
-                    note="Mặc định: http://127.0.0.1:17993")
+                    note="Máº·c Ä‘á»‹nh: http://127.0.0.1:17993")
 
         # [5] Discord Webhooks
-        s = self._section(inner, "  [5]  🟣  Discord — Webhooks")
-        self._field(s, 0, "DISCORD_WEBHOOK_URL",  "General Webhook",  note="Thông báo chung (để trống = tắt)")
-        self._field(s, 1, "ANTIBUG_WEBHOOK_URL",  "Antibug Webhook",  note="Kênh admin: AntiBug + Cheat alert")
+        s = self._section(inner, "  [5]  ðŸŸ£  Discord â€” Webhooks")
+        self._field(s, 0, "DISCORD_WEBHOOK_URL",  "General Webhook",  note="ThÃ´ng bÃ¡o chung (Ä‘á»ƒ trá»‘ng = táº¯t)")
+        self._field(s, 1, "ANTIBUG_WEBHOOK_URL",  "Antibug Webhook",  note="KÃªnh admin: AntiBug + Cheat alert")
         self._field(s, 2, "PLAYER_CONNECT_WEBHOOK_URL", "Player Connect Webhook",
-                    note="Gửi join/leave người chơi (webhook docs): https://discord.com/developers/docs/resources/webhook")
+                    note="Gá»­i join/leave ngÆ°á»i chÆ¡i (webhook docs): https://discord.com/developers/docs/resources/webhook")
 
         # [6] Bot 1
-        s = self._section(inner, "  [6]  🤖  Bot 1 (Mồm Lèo) — Chat Bridge 2 chiều")
-        self._field(s, 0, "DISCORD_CHAT_WEBHOOK", "Chat Webhook (Ingame → Discord)",
-                    note="Webhook nhận chat từ ingame (webhook docs): https://discord.com/developers/docs/resources/webhook")
-        self._field(s, 1, "DISCORD_BOT_TOKEN", "Bot 1 Token (Mồm Lèo)", show="*",
-                    note="discord.com/developers → Applications → Bot → Token (bật Message Content Intent nếu cần): https://discord.com/developers/applications")
-        self._field(s, 2, "DISCORD_CHAT_CHANNEL_ID", "Channel ID (Bot 1 - Mồm Lèo)",
-                    note="Chuột phải kênh Discord → Copy Channel ID")
+        s = self._section(inner, "  [6]  ðŸ¤–  Bot 1 (Má»“m LÃ¨o) â€” Chat Bridge 2 chiá»u")
+        self._field(s, 0, "DISCORD_CHAT_WEBHOOK", "Chat Webhook (Ingame â†’ Discord)",
+                    note="Webhook nháº­n chat tá»« ingame (webhook docs): https://discord.com/developers/docs/resources/webhook")
+        self._field(s, 1, "DISCORD_BOT_TOKEN", "Bot 1 Token (Má»“m LÃ¨o)", show="*",
+                    note="discord.com/developers â†’ Applications â†’ Bot â†’ Token (báº­t Message Content Intent náº¿u cáº§n): https://discord.com/developers/applications")
+        self._field(s, 2, "DISCORD_CHAT_CHANNEL_ID", "Channel ID (Bot 1 - Má»“m LÃ¨o)",
+                    note="Chuá»™t pháº£i kÃªnh Discord â†’ Copy Channel ID")
 
         # [7] Bot 2
-        s = self._section(inner, "  [7]  🤖  Bot 2 (Cờ Hó) — Commands & Features")
-        self._field(s, 0, "RANKING_WEBHOOK_URL", "🏆 Ranking Webhook (Bot 2)",
-                    note="Webhook gửi bảng xếp hạng (webhook docs): https://discord.com/developers/docs/resources/webhook")
-        self._field(s, 1, "DISCORD_BOT2_TOKEN", "Bot 2 Token (Cờ Hó)", show="*",
-                    note="Bật Message Content Intent nếu bot có xử lý message: https://discord.com/developers/applications")
+        s = self._section(inner, "  [7]  ðŸ¤–  Bot 2 (Cá» HÃ³) â€” Commands & Features")
+        self._field(s, 0, "RANKING_WEBHOOK_URL", "ðŸ† Ranking Webhook (Bot 2)",
+                    note="Webhook gá»­i báº£ng xáº¿p háº¡ng (webhook docs): https://discord.com/developers/docs/resources/webhook")
+        self._field(s, 1, "DISCORD_BOT2_TOKEN", "Bot 2 Token (Cá» HÃ³)", show="*",
+                    note="Báº­t Message Content Intent náº¿u bot cÃ³ xá»­ lÃ½ message: https://discord.com/developers/applications")
         self._field(s, 2, "DISCORD_BOT2_CHANNEL_ID", "Bot 2 Channel ID",
-                    note="Chuột phải kênh Discord → Copy Channel ID")
+                    note="Chuá»™t pháº£i kÃªnh Discord â†’ Copy Channel ID")
         self._field(s, 3, "DISCORD_BOT2_RANKING_CHANNEL_ID", "Bot 2 Ranking Channel ID",
-                    note="Kênh riêng để đăng bảng xếp hạng Bot 2")
-        self._field(s, 4, "DISCORD_BOT2_LIVEMAP_CHANNEL_ID", "Bot 2 LiveMap Channel ID (tuỳ chọn)",
-                    note="Nếu bỏ trống: bot2 fallback về DISCORD_BOT2_CHANNEL_ID")
+                    note="KÃªnh riÃªng Ä‘á»ƒ Ä‘Äƒng báº£ng xáº¿p háº¡ng Bot 2")
+        self._field(s, 4, "DISCORD_BOT2_LIVEMAP_CHANNEL_ID", "Bot 2 LiveMap Channel ID (tuá»³ chá»n)",
+                    note="Náº¿u bá» trá»‘ng: bot2 fallback vá» DISCORD_BOT2_CHANNEL_ID")
         self._field(s, 5, "DISCORD_BOT2_NAME", "Bot 2 Name",
-                    note="Tên hiển thị của Bot 2 trong app (mặc định: Cờ Hó)")
+                    note="TÃªn hiá»ƒn thá»‹ cá»§a Bot 2 trong app (máº·c Ä‘á»‹nh: Cá» HÃ³)")
 
         # [8] AntiBug
-        s = self._section(inner, "  [8]  🤖  AntiBug Auto-Kick / Ban")
-        self._field(s, 0, "ANTIBUG_MAX_KICKS",   "Max Kicks",      note="Số vi phạm → BAN vĩnh viễn (mặc định: 3)")
-        self._field(s, 1, "ANTIBUG_KICK_WINDOW", "Kick Window (s)", note="Cửa sổ thời gian giây (mặc định: 300)")
+        s = self._section(inner, "  [8]  ðŸ¤–  AntiBug Auto-Kick / Ban")
+        self._field(s, 0, "ANTIBUG_MAX_KICKS",   "Max Kicks",      note="Sá»‘ vi pháº¡m â†’ BAN vÄ©nh viá»…n (máº·c Ä‘á»‹nh: 3)")
+        self._field(s, 1, "ANTIBUG_KICK_WINDOW", "Kick Window (s)", note="Cá»­a sá»• thá»i gian giÃ¢y (máº·c Ä‘á»‹nh: 300)")
 
         # [8] SteamCMD
-        s = self._section(inner, "  [8]  🔧  SteamCMD (Update Server)")
+        s = self._section(inner, "  [8]  ðŸ”§  SteamCMD (Update Server)")
         self._field(s, 0, "STEAMCMD_EXE", "SteamCMD.exe", browse="file",
-                    note="Đường dẫn đến steamcmd.exe")
+                    note="ÄÆ°á»ng dáº«n Ä‘áº¿n steamcmd.exe")
 
         # [9] App Update
-        s = self._section(inner, "  [9]  🧩  App Update (GitHub)")
+        s = self._section(inner, "  [9]  ðŸ§©  App Update (GitHub)")
         self._field(s, 0, "GITHUB_REPO", "GitHub Repo (owner/repo)",
-                    note="Ví dụ: mitytindev/manager-serverpal")
+                    note="VÃ­ dá»¥: mitytindev/manager-serverpal")
         self._field(s, 1, "AUTO_UPDATE_CHECK", "Auto Check Update",
-                    note="true/false (chỉ tự kiểm tra phiên bản, không tự tải/cài)")
+                    note="true/false (chá»‰ tá»± kiá»ƒm tra phiÃªn báº£n, khÃ´ng tá»± táº£i/cÃ i)")
 
-    # ── Tab Launch ────────────────────────────
+    # â”€â”€ Tab Launch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_launch_tab(self, parent):
         center = tk.Frame(parent, bg=self.BG)
         center.pack(expand=True, fill="both", padx=40, pady=20)
 
         tk.Label(
             center,
-            text="▶ KHỞI ĐỘNG SERVERPAL",
+            text="â–¶ KHá»žI Äá»˜NG SERVERPAL",
             bg=self.BG,
             fg=self.ACCENT,
             font=("Segoe UI", 16, "bold"),
         ).pack(pady=(20, 6))
         tk.Label(
             center,
-            text="Phần mềm quản lý server Palworld • Manager ServerPal • v1.0.1 by MityTinDev",
+            text="Pháº§n má»m quáº£n lÃ½ server Palworld â€¢ Manager ServerPal â€¢ v1.0.2 by MityTinDev",
             bg=self.BG,
             fg=self.FG_DIM,
             font=("Segoe UI", 9),
         ).pack(pady=(0, 14))
 
-        # Card: Thông tin + trạng thái
+        # Card: ThÃ´ng tin + tráº¡ng thÃ¡i
         info_card = tk.Frame(center, bg="#0a0f1a", padx=16, pady=14)
         info_card.pack(fill="x", padx=10, pady=(0, 18))
 
         self._lbl_run_status = tk.Label(
-            info_card, text="● Chưa chạy",
+            info_card, text="â— ChÆ°a cháº¡y",
             bg="#0a0f1a", fg="#ff5555",
             font=("Segoe UI", 11, "bold"),
         )
@@ -1157,13 +1157,13 @@ class SetupApp:
 
         tk.Label(
             info_card,
-            text="Tiến trình điều khiển: Controller ServerPal",
+            text="Tiáº¿n trÃ¬nh Ä‘iá»u khiá»ƒn: Controller ServerPal",
             bg="#0a0f1a",
             fg="#93c5fd",
             font=("Segoe UI", 9),
         ).pack(anchor="w", pady=(10, 0))
 
-        # Card: Nút điều khiển
+        # Card: NÃºt Ä‘iá»u khiá»ƒn
         btn_card = tk.Frame(center, bg="#0a0a0a", padx=12, pady=12)
         btn_card.pack(fill="x", padx=10, pady=(0, 16))
 
@@ -1173,7 +1173,7 @@ class SetupApp:
 
         self._btn_start = tk.Button(
             btn_card,
-            text="▶ Start",
+            text="â–¶ Start",
             bg="#003d2e",
             fg="#00ffcc",
             relief="flat",
@@ -1187,7 +1187,7 @@ class SetupApp:
 
         self._btn_restart = tk.Button(
             btn_card,
-            text="🔄 Restart",
+            text="ðŸ”„ Restart",
             bg="#2a2a2a",
             fg="#ff9900",
             relief="flat",
@@ -1201,7 +1201,7 @@ class SetupApp:
 
         self._btn_stop = tk.Button(
             btn_card,
-            text="⏹ Stop",
+            text="â¹ Stop",
             bg=self.BTN_RED,
             fg="#ff6666",
             relief="flat",
@@ -1214,10 +1214,10 @@ class SetupApp:
         )
         self._btn_stop.grid(row=0, column=2, sticky="ew", padx=8)
 
-        # Giới thiệu chức năng app
+        # Giá»›i thiá»‡u chá»©c nÄƒng app
         tk.Label(
             center,
-            text="Ứng dụng quản lý server Palworld: khởi chạy bảng điều khiển, cấu hình nhanh App/INI, cài môi trường và cập nhật SteamCMD.",
+            text="á»¨ng dá»¥ng quáº£n lÃ½ server Palworld: khá»Ÿi cháº¡y báº£ng Ä‘iá»u khiá»ƒn, cáº¥u hÃ¬nh nhanh App/INI, cÃ i mÃ´i trÆ°á»ng vÃ  cáº­p nháº­t SteamCMD.",
             bg=self.BG,
             fg=self.FG_DIM,
             font=("Segoe UI", 9),
@@ -1226,22 +1226,22 @@ class SetupApp:
         ).pack(pady=(6, 6))
         tk.Label(
             center,
-            text="Phát triển bởi lập trình viên MityTinDev • Phiên bản v1.0.1 by MityTinDev",
+            text="PhÃ¡t triá»ƒn bá»Ÿi láº­p trÃ¬nh viÃªn MityTinDev â€¢ PhiÃªn báº£n v1.0.2 by MityTinDev",
             bg=self.BG,
             fg="#9aa0a6",
             font=("Segoe UI", 9, "italic"),
         ).pack(pady=(0, 6))
 
-    # ── Tab Update ────────────────────────────
+    # â”€â”€ Tab Update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_update_tab(self, parent):
         inner = tk.Frame(parent, bg=self.BG)
         inner.pack(fill="both", expand=True, padx=30, pady=20)
 
-        tk.Label(inner, text="⬆  Cập Nhật Riêng Biệt",
+        tk.Label(inner, text="â¬†  Cáº­p Nháº­t RiÃªng Biá»‡t",
                  bg=self.BG, fg=self.ACCENT,
                  font=("Segoe UI", 16, "bold")).pack(pady=(10, 4))
         tk.Label(inner,
-                 text="Tách riêng: Update game PalServer và Update SteamCMD",
+                 text="TÃ¡ch riÃªng: Update game PalServer vÃ  Update SteamCMD",
                  bg=self.BG, fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(pady=(0, 20))
 
@@ -1251,35 +1251,35 @@ class SetupApp:
         tk.Label(info, text="App ID Palworld Dedicated Server:  2394010",
                  bg=self.BG3, fg=self.FG, font=("Consolas", 10)).pack(anchor="w")
         tk.Label(info,
-                 text="Lệnh: steamcmd.exe +login anonymous +app_update 2394010 validate +quit",
+                 text="Lá»‡nh: steamcmd.exe +login anonymous +app_update 2394010 validate +quit",
                  bg=self.BG3, fg="#888", font=("Consolas", 8)).pack(anchor="w", pady=(4, 0))
 
         # Buttons
         btn_f = tk.Frame(inner, bg=self.BG)
         btn_f.pack(pady=10)
 
-        tk.Button(btn_f, text="🎮  Update Game PalServer",
+        tk.Button(btn_f, text="ðŸŽ®  Update Game PalServer",
                   bg="#1a0050", fg="#aa88ff",
                   relief="flat", padx=20, pady=10,
                   font=("Segoe UI", 11, "bold"), cursor="hand2",
                   command=self._run_game_update
                   ).grid(row=0, column=0, padx=8, pady=4)
 
-        tk.Button(btn_f, text="🔄  Validate / Sửa file hỏng",
+        tk.Button(btn_f, text="ðŸ”„  Validate / Sá»­a file há»ng",
                   bg="#2a1a00", fg="#ff9900",
                   relief="flat", padx=20, pady=10,
                   font=("Segoe UI", 10), cursor="hand2",
                   command=self._run_game_validate
                   ).grid(row=0, column=1, padx=8, pady=4)
 
-        tk.Button(btn_f, text="📂  Mở thư mục SteamCMD",
+        tk.Button(btn_f, text="ðŸ“‚  Má»Ÿ thÆ° má»¥c SteamCMD",
                   bg="#1a1a1a", fg="#aaa",
                   relief="flat", padx=20, pady=10,
                   font=("Segoe UI", 10), cursor="hand2",
                   command=self._open_steamcmd_dir
                   ).grid(row=1, column=0, padx=8, pady=4)
 
-        tk.Button(btn_f, text="📥  Tải SteamCMD (mở web)",
+        tk.Button(btn_f, text="ðŸ“¥  Táº£i SteamCMD (má»Ÿ web)",
                   bg="#1a1a1a", fg="#7289da",
                   relief="flat", padx=20, pady=10,
                   font=("Segoe UI", 10), cursor="hand2",
@@ -1287,7 +1287,7 @@ class SetupApp:
                       "https://developer.valvesoftware.com/wiki/SteamCMD")
                   ).grid(row=1, column=1, padx=8, pady=4)
 
-        tk.Button(btn_f, text="🛠  Update SteamCMD tự động",
+        tk.Button(btn_f, text="ðŸ›   Update SteamCMD tá»± Ä‘á»™ng",
                   bg="#003355", fg="#66ccff",
                   relief="flat", padx=20, pady=10,
                   font=("Segoe UI", 10, "bold"), cursor="hand2",
@@ -1295,10 +1295,10 @@ class SetupApp:
                   ).grid(row=2, column=0, columnspan=2, padx=8, pady=(10, 4), sticky="ew")
 
         tk.Frame(inner, bg="#2a2a2a", height=1).pack(fill="x", pady=16)
-        tk.Label(inner, text="🧩  Cập nhật ứng dụng (GitHub Releases)",
+        tk.Label(inner, text="ðŸ§©  Cáº­p nháº­t á»©ng dá»¥ng (GitHub Releases)",
                  bg=self.BG, fg=self.ACCENT, font=("Segoe UI", 11, "bold")).pack(anchor="w")
         tk.Label(inner,
-                 text="Nhập repo dạng owner/repo, ví dụ: mitytindev/manager-serverpal",
+                 text="Nháº­p repo dáº¡ng owner/repo, vÃ­ dá»¥: mitytindev/manager-serverpal",
                  bg=self.BG, fg=self.FG_DIM, font=("Segoe UI", 9)).pack(anchor="w", pady=(2, 8))
 
         repo_row = tk.Frame(inner, bg=self.BG)
@@ -1313,48 +1313,48 @@ class SetupApp:
 
         up_btn = tk.Frame(inner, bg=self.BG)
         up_btn.pack(fill="x", pady=(0, 6))
-        tk.Button(up_btn, text="🔎 Kiểm tra update app",
+        tk.Button(up_btn, text="ðŸ”Ž Kiá»ƒm tra update app",
                   bg="#1f3b66", fg="#9dd1ff",
                   relief="flat", padx=14, pady=8,
                   font=("Segoe UI", 9, "bold"), cursor="hand2",
                   command=self._check_app_update
                   ).pack(side="left", padx=(0, 8))
-        tk.Button(up_btn, text="⬇ Tải & cài bản mới",
+        tk.Button(up_btn, text="â¬‡ Táº£i & cÃ i báº£n má»›i",
                   bg="#0f4c75", fg="white",
                   relief="flat", padx=14, pady=8,
                   font=("Segoe UI", 9, "bold"), cursor="hand2",
                   command=self._install_latest_update
                   ).pack(side="left", padx=(0, 8))
-        tk.Button(up_btn, text="🌐 Mở trang Releases",
+        tk.Button(up_btn, text="ðŸŒ Má»Ÿ trang Releases",
                   bg="#2a2a2a", fg="#aaa",
                   relief="flat", padx=14, pady=8,
                   font=("Segoe UI", 9), cursor="hand2",
                   command=self._open_repo_releases
                   ).pack(side="left")
 
-        self._lbl_update_status = tk.Label(inner, text=f"Phiên bản hiện tại: {APP_VERSION}",
+        self._lbl_update_status = tk.Label(inner, text=f"PhiÃªn báº£n hiá»‡n táº¡i: {APP_VERSION}",
                                            bg=self.BG, fg="#8ab4f8",
                                            font=("Consolas", 9))
         self._lbl_update_status.pack(anchor="w", pady=(4, 0))
 
         tk.Frame(inner, bg="#222", height=1).pack(fill="x", pady=16)
-        tk.Label(inner, text="SteamCMD.exe đang dùng:",
+        tk.Label(inner, text="SteamCMD.exe Ä‘ang dÃ¹ng:",
                  bg=self.BG, fg=self.FG_DIM, font=("Segoe UI", 9)).pack(anchor="w")
-        self._lbl_steamcmd_path = tk.Label(inner, text="(chưa cấu hình)",
+        self._lbl_steamcmd_path = tk.Label(inner, text="(chÆ°a cáº¥u hÃ¬nh)",
                                            bg=self.BG, fg="#888",
                                            font=("Consolas", 8))
         self._lbl_steamcmd_path.pack(anchor="w", pady=(2, 0))
 
-    # ── Tab Install ───────────────────────────
+    # â”€â”€ Tab Install â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_install_tab(self, parent):
         inner = tk.Frame(parent, bg=self.BG)
         inner.pack(fill="both", expand=True, padx=30, pady=20)
 
-        tk.Label(inner, text="📦  Cài Đặt Môi Trường",
+        tk.Label(inner, text="ðŸ“¦  CÃ i Äáº·t MÃ´i TrÆ°á»ng",
                  bg=self.BG, fg=self.ACCENT,
                  font=("Segoe UI", 16, "bold")).pack(pady=(10, 4))
         tk.Label(inner,
-                 text="Cài Python packages và Node.js packages cần thiết để chạy app",
+                 text="CÃ i Python packages vÃ  Node.js packages cáº§n thiáº¿t Ä‘á»ƒ cháº¡y app",
                  bg=self.BG, fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(pady=(0, 20))
 
@@ -1362,7 +1362,7 @@ class SetupApp:
         btn_f.pack(pady=10)
 
         self._btn_pip_install = tk.Button(
-            btn_f, text="🐍  Cài Python packages\n(pip install -r requirements.txt)",
+            btn_f, text="ðŸ  CÃ i Python packages\n(pip install -r requirements.txt)",
             bg=self.BTN_OK, fg="white",
             relief="flat", padx=24, pady=12,
             font=("Segoe UI", 10, "bold"), cursor="hand2",
@@ -1371,7 +1371,7 @@ class SetupApp:
         self._btn_pip_install.grid(row=0, column=0, padx=12, pady=6, sticky="ew")
 
         self._btn_npm_install = tk.Button(
-            btn_f, text="🟩  Cài Node.js packages\n(npm install — Live Map)",
+            btn_f, text="ðŸŸ©  CÃ i Node.js packages\n(npm install â€” Live Map)",
             bg="#1a3a1a", fg="#88ff88",
             relief="flat", padx=24, pady=12,
             font=("Segoe UI", 10, "bold"), cursor="hand2",
@@ -1379,14 +1379,14 @@ class SetupApp:
         )
         self._btn_npm_install.grid(row=0, column=1, padx=12, pady=6, sticky="ew")
 
-        tk.Button(btn_f, text="🔍  Kiểm tra phiên bản\n(Python / Node.js / npm)",
+        tk.Button(btn_f, text="ðŸ”  Kiá»ƒm tra phiÃªn báº£n\n(Python / Node.js / npm)",
                   bg="#1a1a1a", fg="#aaa",
                   relief="flat", padx=24, pady=12,
                   font=("Segoe UI", 10), cursor="hand2",
                   command=self._check_versions
                   ).grid(row=1, column=0, padx=12, pady=6, sticky="ew")
 
-        tk.Button(btn_f, text="📄  Xem requirements.txt",
+        tk.Button(btn_f, text="ðŸ“„  Xem requirements.txt",
                   bg="#1a1a1a", fg="#aaa",
                   relief="flat", padx=24, pady=12,
                   font=("Segoe UI", 10), cursor="hand2",
@@ -1398,16 +1398,16 @@ class SetupApp:
             self._btn_npm_install.config(state="disabled", bg="#333", fg="#777", cursor="")
             tk.Label(
                 inner,
-                text="Bản phát hành EXE: đã đóng gói sẵn runtime, không cần cài Python/Node trên máy người dùng.",
+                text="Báº£n phÃ¡t hÃ nh EXE: Ä‘Ã£ Ä‘Ã³ng gÃ³i sáºµn runtime, khÃ´ng cáº§n cÃ i Python/Node trÃªn mÃ¡y ngÆ°á»i dÃ¹ng.",
                 bg=self.BG, fg="#88ccaa", font=("Segoe UI", 9, "italic")
             ).pack(pady=(8, 0))
 
-    # ══════════════════════════════════════════════════════════════
+    # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     #  TAB MODS
-    # ══════════════════════════════════════════════════════════════
+    # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     def _pal_root(self) -> str:
-        """Trả về thư mục gốc PalServer (dirname của SERVER_EXE)."""
+        """Tráº£ vá» thÆ° má»¥c gá»‘c PalServer (dirname cá»§a SERVER_EXE)."""
         exe = self._vars.get("SERVER_EXE", tk.StringVar()).get().strip()
         if not exe:
             cfg = load_config()
@@ -1442,7 +1442,7 @@ class SetupApp:
         if mod.get("id") == "paldefender":
             paldef_dll = os.path.join(root, "Pal", "Binaries", "Win64", "PalDefender.dll")
             d3d9_dll = os.path.join(root, "Pal", "Binaries", "Win64", "d3d9.dll")
-            # Rule cứng: phải có cả 2 file mới coi là đang bật.
+            # Rule cá»©ng: pháº£i cÃ³ cáº£ 2 file má»›i coi lÃ  Ä‘ang báº­t.
             if os.path.exists(paldef_dll) and os.path.exists(d3d9_dll):
                 return "enabled"
             if os.path.exists(paldef_dll + ".disabled") or os.path.exists(d3d9_dll + ".disabled"):
@@ -1457,7 +1457,7 @@ class SetupApp:
         return "not_installed"
 
     def _mod_files_for_manage(self, mod: dict) -> list[str]:
-        """Danh sách file/folder của mod cần quản lý khi bật/tắt/gỡ."""
+        """Danh sÃ¡ch file/folder cá»§a mod cáº§n quáº£n lÃ½ khi báº­t/táº¯t/gá»¡."""
         root = self._pal_root()
         if not root:
             return []
@@ -1472,7 +1472,7 @@ class SetupApp:
         return [os.path.join(root, r) for r in rels]
 
     def _mod_files_for_uninstall(self, mod: dict) -> list[str]:
-        """Danh sách file/folder dùng riêng cho thao tác gỡ mod."""
+        """Danh sÃ¡ch file/folder dÃ¹ng riÃªng cho thao tÃ¡c gá»¡ mod."""
         root = self._pal_root()
         if not root:
             return []
@@ -1487,31 +1487,31 @@ class SetupApp:
         return [os.path.join(root, r) for r in rels]
 
     def _mod_toggle(self, mod: dict):
-        """Bật/tắt mod bằng cách đổi tên file/folder toggle."""
+        """Báº­t/táº¯t mod báº±ng cÃ¡ch Ä‘á»•i tÃªn file/folder toggle."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
         tgl      = os.path.join(root, mod["toggle"])
         disabled = tgl + ".disabled"
         try:
             if os.path.exists(tgl):
                 os.rename(tgl, disabled)
-                self._log(f"🔴 Đã tắt {mod['name']} → đổi tên thành .disabled")
+                self._log(f"ðŸ”´ ÄÃ£ táº¯t {mod['name']} â†’ Ä‘á»•i tÃªn thÃ nh .disabled")
             elif os.path.exists(disabled):
                 os.rename(disabled, tgl)
-                self._log(f"🟢 Đã bật {mod['name']} → khôi phục tên gốc")
+                self._log(f"ðŸŸ¢ ÄÃ£ báº­t {mod['name']} â†’ khÃ´i phá»¥c tÃªn gá»‘c")
             else:
-                self._log(f"⚠️ {mod['name']}: không tìm thấy file/folder toggle")
+                self._log(f"âš ï¸ {mod['name']}: khÃ´ng tÃ¬m tháº¥y file/folder toggle")
         except Exception as e:
-            self._log(f"❌ Toggle {mod['name']}: {e}")
+            self._log(f"âŒ Toggle {mod['name']}: {e}")
         self._refresh_mod_cards()
 
     def _mod_enable(self, mod: dict):
-        """Chỉ bật mod (rename .disabled → gốc). Không tải lại."""
+        """Chá»‰ báº­t mod (rename .disabled â†’ gá»‘c). KhÃ´ng táº£i láº¡i."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
         files = self._mod_files_for_manage(mod)
         changed = 0
@@ -1522,18 +1522,18 @@ class SetupApp:
                     os.rename(disabled, tgl)
                     changed += 1
                 except Exception as e:
-                    self._log(f"❌ Bật {mod['name']} ({os.path.basename(tgl)}): {e}")
+                    self._log(f"âŒ Báº­t {mod['name']} ({os.path.basename(tgl)}): {e}")
         if changed:
-            self._log(f"🟢 Đã bật {mod['name']} ({changed} file).")
+            self._log(f"ðŸŸ¢ ÄÃ£ báº­t {mod['name']} ({changed} file).")
         else:
-            self._log(f"⚠️ {mod['name']}: không tìm thấy file .disabled")
+            self._log(f"âš ï¸ {mod['name']}: khÃ´ng tÃ¬m tháº¥y file .disabled")
         self._refresh_mod_cards()
 
     def _mod_disable(self, mod: dict):
-        """Chỉ tắt mod (rename gốc → .disabled). Không xóa file."""
+        """Chá»‰ táº¯t mod (rename gá»‘c â†’ .disabled). KhÃ´ng xÃ³a file."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
         files = self._mod_files_for_manage(mod)
         changed = 0
@@ -1544,28 +1544,28 @@ class SetupApp:
                     os.rename(tgl, disabled)
                     changed += 1
                 except Exception as e:
-                    self._log(f"❌ Tắt {mod['name']} ({os.path.basename(tgl)}): {e}")
+                    self._log(f"âŒ Táº¯t {mod['name']} ({os.path.basename(tgl)}): {e}")
         if changed:
-            self._log(f"🔴 Đã tắt {mod['name']} ({changed} file).")
+            self._log(f"ðŸ”´ ÄÃ£ táº¯t {mod['name']} ({changed} file).")
         else:
-            self._log(f"⚠️ {mod['name']}: không tìm thấy file/folder đang bật")
+            self._log(f"âš ï¸ {mod['name']}: khÃ´ng tÃ¬m tháº¥y file/folder Ä‘ang báº­t")
         self._refresh_mod_cards()
 
     def _mod_uninstall(self, mod: dict):
-        """Gỡ cài đặt mod: xóa file/folder toggle(probe) an toàn + bản .disabled nếu có."""
+        """Gá»¡ cÃ i Ä‘áº·t mod: xÃ³a file/folder toggle(probe) an toÃ n + báº£n .disabled náº¿u cÃ³."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
 
         candidates = self._mod_files_for_uninstall(mod)
-        # Luôn thử dọn cả file/folder .disabled tương ứng.
+        # LuÃ´n thá»­ dá»n cáº£ file/folder .disabled tÆ°Æ¡ng á»©ng.
         candidates_with_disabled = []
         for p in candidates:
             candidates_with_disabled.append(p)
             candidates_with_disabled.append(p + ".disabled")
 
-        # Chỉ cho phép xóa trong root PalServer để tránh xóa nhầm.
+        # Chá»‰ cho phÃ©p xÃ³a trong root PalServer Ä‘á»ƒ trÃ¡nh xÃ³a nháº§m.
         root_abs = os.path.abspath(root)
         targets = []
         for p in candidates_with_disabled:
@@ -1574,13 +1574,13 @@ class SetupApp:
                 targets.append(p_abs)
 
         if not targets:
-            self._log(f"⚠️ [{mod['name']}] Không tìm thấy file mod để gỡ.")
+            self._log(f"âš ï¸ [{mod['name']}] KhÃ´ng tÃ¬m tháº¥y file mod Ä‘á»ƒ gá»¡.")
             self._remove_installed_ver(mod.get("id"))
             self._refresh_mod_cards()
             return
 
-        txt = "Bạn có chắc muốn gỡ cài đặt mod này?\n\n" + "\n".join(f"- {t}" for t in targets)
-        if not messagebox.askyesno("Xác nhận gỡ mod", txt):
+        txt = "Báº¡n cÃ³ cháº¯c muá»‘n gá»¡ cÃ i Ä‘áº·t mod nÃ y?\n\n" + "\n".join(f"- {t}" for t in targets)
+        if not messagebox.askyesno("XÃ¡c nháº­n gá»¡ mod", txt):
             return
 
         errs = []
@@ -1597,41 +1597,41 @@ class SetupApp:
 
         self._remove_installed_ver(mod.get("id"))
         if errs:
-            self._log(f"⚠️ Gỡ {mod['name']} xong một phần ({removed}/{len(targets)}).")
+            self._log(f"âš ï¸ Gá»¡ {mod['name']} xong má»™t pháº§n ({removed}/{len(targets)}).")
             for e in errs:
                 self._log(f"   - {e}")
         else:
-            self._log(f"🗑️ Đã gỡ cài đặt {mod['name']} ({removed} mục).")
+            self._log(f"ðŸ—‘ï¸ ÄÃ£ gá»¡ cÃ i Ä‘áº·t {mod['name']} ({removed} má»¥c).")
         self._refresh_mod_cards()
 
     def _smart_action(self, mod: dict, url_override: str = ""):
-        """Hành động thông minh theo trạng thái:
-           • not_installed → tải + cài đặt (tự động bật sau khi cài)
-           • disabled      → chỉ bật lại (KHÔNG tải lại)
-           • enabled       → thông báo đã hoạt động rồi
+        """HÃ nh Ä‘á»™ng thÃ´ng minh theo tráº¡ng thÃ¡i:
+           â€¢ not_installed â†’ táº£i + cÃ i Ä‘áº·t (tá»± Ä‘á»™ng báº­t sau khi cÃ i)
+           â€¢ disabled      â†’ chá»‰ báº­t láº¡i (KHÃ”NG táº£i láº¡i)
+           â€¢ enabled       â†’ thÃ´ng bÃ¡o Ä‘Ã£ hoáº¡t Ä‘á»™ng rá»“i
         """
         status = self._mod_status(mod)
         if status == "no_root":
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
         if status == "enabled":
-            self._log(f"✅ {mod['name']} đang hoạt động — không cần làm gì thêm!")
+            self._log(f"âœ… {mod['name']} Ä‘ang hoáº¡t Ä‘á»™ng â€” khÃ´ng cáº§n lÃ m gÃ¬ thÃªm!")
             return
 
-        # Kiểm tra nếu cần update
+        # Kiá»ƒm tra náº¿u cáº§n update
         installed_ver = self._get_installed_ver(mod.get("id"))
         if installed_ver and installed_ver != mod["version"]:
-             self._log(f"⬇ [{mod['name']}] Có bản mới ({mod['version']}) — đang cập nhật...")
+             self._log(f"â¬‡ [{mod['name']}] CÃ³ báº£n má»›i ({mod['version']}) â€” Ä‘ang cáº­p nháº­t...")
              self._mod_install(mod, url_override)
              return
 
         if status == "disabled":
-            # Đã cài sẵn, chỉ cần bật lại (không tải/giải nén lại)
-            self._log(f"🟢 [{mod['name']}] Đã cài sẵn — bật lại không cần tải...")
+            # ÄÃ£ cÃ i sáºµn, chá»‰ cáº§n báº­t láº¡i (khÃ´ng táº£i/giáº£i nÃ©n láº¡i)
+            self._log(f"ðŸŸ¢ [{mod['name']}] ÄÃ£ cÃ i sáºµn â€” báº­t láº¡i khÃ´ng cáº§n táº£i...")
             self._mod_enable(mod)
             return
-        # not_installed → tải + cài
-        self._log(f"⬇ [{mod['name']}] Chưa cài — bắt đầu tải và cài đặt...")
+        # not_installed â†’ táº£i + cÃ i
+        self._log(f"â¬‡ [{mod['name']}] ChÆ°a cÃ i â€” báº¯t Ä‘áº§u táº£i vÃ  cÃ i Ä‘áº·t...")
         self._mod_install(mod, url_override)
 
     def _find_mod(self, mod_id: str) -> dict | None:
@@ -1641,15 +1641,15 @@ class SetupApp:
         return None
 
     def _bootstrap_server_once_for_paldefender(self, run_seconds: int = 10) -> bool:
-        """Chạy PalServer.exe trong vài giây rồi tự tắt để bootstrap trước khi cài PalDefender."""
+        """Cháº¡y PalServer.exe trong vÃ i giÃ¢y rá»“i tá»± táº¯t Ä‘á»ƒ bootstrap trÆ°á»›c khi cÃ i PalDefender."""
         cfg = load_config()
         server_exe = _resolve_server_exe_path(cfg.get("SERVER_EXE", ""))
         if not server_exe or not os.path.isfile(server_exe):
-            self.root.after(0, lambda: self._log("❌ Không tìm thấy PalServer.exe để bootstrap PalDefender."))
+            self.root.after(0, lambda: self._log("âŒ KhÃ´ng tÃ¬m tháº¥y PalServer.exe Ä‘á»ƒ bootstrap PalDefender."))
             return False
 
         cmd = [server_exe, "-port=8211", "-RESTAPIPort=8212", "-log"]
-        self.root.after(0, lambda: self._log(f"🚀 Đang chạy PalServer.exe {run_seconds}s để bootstrap PalDefender..."))
+        self.root.after(0, lambda: self._log(f"ðŸš€ Äang cháº¡y PalServer.exe {run_seconds}s Ä‘á»ƒ bootstrap PalDefender..."))
         proc = None
         try:
             proc = subprocess.Popen(
@@ -1662,10 +1662,10 @@ class SetupApp:
                 if proc.poll() is not None:
                     break
                 time.sleep(0.2)
-            self.root.after(0, lambda: self._log("⏹️ Hết thời gian bootstrap, đang tắt PalServer.exe..."))
+            self.root.after(0, lambda: self._log("â¹ï¸ Háº¿t thá»i gian bootstrap, Ä‘ang táº¯t PalServer.exe..."))
             return True
         except Exception as e:
-            self.root.after(0, lambda e=e: self._log(f"❌ Lỗi bootstrap server: {e}"))
+            self.root.after(0, lambda e=e: self._log(f"âŒ Lá»—i bootstrap server: {e}"))
             return False
         finally:
             if proc and proc.poll() is None:
@@ -1678,30 +1678,30 @@ class SetupApp:
                     pass
 
     def _install_paldefender_with_bootstrap(self, paldef_mod: dict, url_override: str = ""):
-        """Flow cài PalDefender: đảm bảo UE4SS -> bootstrap server 1 lần -> cài PalDefender."""
+        """Flow cÃ i PalDefender: Ä‘áº£m báº£o UE4SS -> bootstrap server 1 láº§n -> cÃ i PalDefender."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
 
         ue4ss_mod = self._find_mod("ue4ss")
         if not ue4ss_mod:
-            self._log("❌ Không tìm thấy cấu hình mod UE4SS trong MODS_CATALOG.")
+            self._log("âŒ KhÃ´ng tÃ¬m tháº¥y cáº¥u hÃ¬nh mod UE4SS trong MODS_CATALOG.")
             return
 
-        # Nếu UE4SS đang disabled thì bật ngay (main thread, nhanh).
+        # Náº¿u UE4SS Ä‘ang disabled thÃ¬ báº­t ngay (main thread, nhanh).
         ue4ss_status = self._mod_status(ue4ss_mod)
         if ue4ss_status == "disabled":
-            self._log("🟢 [UE4SS] Đang bật lại trước khi cài PalDefender...")
+            self._log("ðŸŸ¢ [UE4SS] Äang báº­t láº¡i trÆ°á»›c khi cÃ i PalDefender...")
             self._mod_enable(ue4ss_mod)
 
         paldef_url = (url_override or paldef_mod["url"]).strip()
 
         def _worker():
-            # 1) Nếu UE4SS chưa cài thì cài trước
+            # 1) Náº¿u UE4SS chÆ°a cÃ i thÃ¬ cÃ i trÆ°á»›c
             st = self._mod_status(ue4ss_mod)
             if st == "not_installed":
-                self.root.after(0, lambda: self._log("⬇ [UE4SS] Cài trước để hỗ trợ PalDefender..."))
+                self.root.after(0, lambda: self._log("â¬‡ [UE4SS] CÃ i trÆ°á»›c Ä‘á»ƒ há»— trá»£ PalDefender..."))
                 ok_ue4ss = self._do_download_install(
                     ue4ss_mod["url"],
                     os.path.join(root, ue4ss_mod["target"]),
@@ -1710,18 +1710,18 @@ class SetupApp:
                     success_cb=lambda: self._set_installed_ver(ue4ss_mod.get("id"), ue4ss_mod.get("version", "custom"))
                 )
                 if not ok_ue4ss:
-                    self.root.after(0, lambda: self._log("❌ [UE4SS] Cài thất bại. Dừng cài PalDefender."))
+                    self.root.after(0, lambda: self._log("âŒ [UE4SS] CÃ i tháº¥t báº¡i. Dá»«ng cÃ i PalDefender."))
                     self.root.after(300, self._refresh_mod_cards)
                     return
 
-            # 2) Bootstrap server 1 lần
+            # 2) Bootstrap server 1 láº§n
             if not self._bootstrap_server_once_for_paldefender():
-                self.root.after(0, lambda: self._log("❌ Bootstrap server thất bại. Dừng cài PalDefender."))
+                self.root.after(0, lambda: self._log("âŒ Bootstrap server tháº¥t báº¡i. Dá»«ng cÃ i PalDefender."))
                 self.root.after(300, self._refresh_mod_cards)
                 return
 
-            # 3) Cài PalDefender
-            self.root.after(0, lambda: self._log("⬇ [PalDefender] Bắt đầu cài sau bootstrap..."))
+            # 3) CÃ i PalDefender
+            self.root.after(0, lambda: self._log("â¬‡ [PalDefender] Báº¯t Ä‘áº§u cÃ i sau bootstrap..."))
             ok_paldef = self._do_download_install(
                 paldef_url,
                 os.path.join(root, paldef_mod["target"]),
@@ -1730,20 +1730,20 @@ class SetupApp:
                 success_cb=lambda: self._set_installed_ver(paldef_mod.get("id"), paldef_mod.get("version", "custom"))
             )
             if not ok_paldef:
-                self.root.after(0, lambda: self._log("❌ [PalDefender] Cài thất bại sau bootstrap."))
+                self.root.after(0, lambda: self._log("âŒ [PalDefender] CÃ i tháº¥t báº¡i sau bootstrap."))
             self.root.after(300, self._refresh_mod_cards)
 
         threading.Thread(target=_worker, daemon=True).start()
 
     def _mod_install(self, mod: dict, url_override: str = ""):
-        """Download + giải nén mod vào đúng thư mục target."""
+        """Download + giáº£i nÃ©n mod vÃ o Ä‘Ãºng thÆ° má»¥c target."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE trong tab Cấu Hình!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE trong tab Cáº¥u HÃ¬nh!")
             return
         url = (url_override or mod["url"]).strip()
         if not url:
-            messagebox.showerror("Lỗi", "URL rỗng — không thể tải!")
+            messagebox.showerror("Lá»—i", "URL rá»—ng â€” khÃ´ng thá»ƒ táº£i!")
             return
         target_dir = os.path.join(root, mod["target"])
         threading.Thread(
@@ -1753,23 +1753,23 @@ class SetupApp:
             daemon=True
         ).start()
 
-    # ══════════════════════════════════════════════════════════════
-    #  CƠ CHẾ: TẢI → GIẢI NÉN → CÀI ĐẶT  (3 giai đoạn tách biệt)
-    # ══════════════════════════════════════════════════════════════
+    # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    #  CÆ  CHáº¾: Táº¢I â†’ GIáº¢I NÃ‰N â†’ CÃ€I Äáº¶T  (3 giai Ä‘oáº¡n tÃ¡ch biá»‡t)
+    # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     def _do_download_install(self, url: str, target_dir: str, label: str, mod: dict = None, success_cb=None):
-        """(Chạy trong thread) 3 giai đoạn:
-           1. DOWNLOAD  — tải archive về thư mục tạm, báo tiến độ %
-           2. EXTRACT   — giải nén vào thư mục tạm riêng (không đụng target)
-           3. INSTALL   — smart-copy: phát hiện cấu trúc archive, copy đúng chỗ
-        Dọn sạch temp sau mỗi trường hợp (thành công lẫn thất bại).
+        """(Cháº¡y trong thread) 3 giai Ä‘oáº¡n:
+           1. DOWNLOAD  â€” táº£i archive vá» thÆ° má»¥c táº¡m, bÃ¡o tiáº¿n Ä‘á»™ %
+           2. EXTRACT   â€” giáº£i nÃ©n vÃ o thÆ° má»¥c táº¡m riÃªng (khÃ´ng Ä‘á»¥ng target)
+           3. INSTALL   â€” smart-copy: phÃ¡t hiá»‡n cáº¥u trÃºc archive, copy Ä‘Ãºng chá»—
+        Dá»n sáº¡ch temp sau má»—i trÆ°á»ng há»£p (thÃ nh cÃ´ng láº«n tháº¥t báº¡i).
         """
-        tmp_root = tempfile.mkdtemp(prefix="palmod_")   # thư mục tạm chính
+        tmp_root = tempfile.mkdtemp(prefix="palmod_")   # thÆ° má»¥c táº¡m chÃ­nh
         done_ok = False
         try:
-            # ────────────────────────────────────────────────────────
-            # GIAI ĐOẠN 1 — DOWNLOAD
-            # ────────────────────────────────────────────────────────
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            # GIAI ÄOáº N 1 â€” DOWNLOAD
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             import requests as _req
             import re as _re
 
@@ -1778,24 +1778,24 @@ class SetupApp:
                 m = _re.search(r"/d/([-\w]{25,})", url)
                 if m:
                     url = f"https://drive.google.com/uc?export=download&id={m.group(1)}"
-                    self.root.after(0, lambda: self._log(f"🔄  Google Drive link detected -> Direct Download..."))
+                    self.root.after(0, lambda: self._log(f"ðŸ”„  Google Drive link detected -> Direct Download..."))
 
             self.root.after(0, lambda: self._log(
-                f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                f"⬇  [{label}]  Đang kết nối..."))
+                f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+                f"â¬‡  [{label}]  Äang káº¿t ná»‘i..."))
 
             try:
-                # Thêm User-Agent để tránh bị chặn bởi một số CDN
+                # ThÃªm User-Agent Ä‘á»ƒ trÃ¡nh bá»‹ cháº·n bá»Ÿi má»™t sá»‘ CDN
                 resp = _req.get(url, stream=True, timeout=60, headers={'User-Agent': 'Mozilla/5.0'})
                 resp.raise_for_status()
 
-                # [Check] Ngăn tải trang web (HTML) thay vì file mod
+                # [Check] NgÄƒn táº£i trang web (HTML) thay vÃ¬ file mod
                 ctype = resp.headers.get("Content-Type", "").lower()
                 if "text/html" in ctype:
-                    self.root.after(0, lambda: self._log(f"❌  Lỗi: URL này là trang web (HTML), không phải file mod.\n   Hãy lấy Direct Link (chuột phải nút Download -> Copy Link)."))
+                    self.root.after(0, lambda: self._log(f"âŒ  Lá»—i: URL nÃ y lÃ  trang web (HTML), khÃ´ng pháº£i file mod.\n   HÃ£y láº¥y Direct Link (chuá»™t pháº£i nÃºt Download -> Copy Link)."))
                     return False
 
-                # [Auto-detect] Lấy tên file và đuôi file từ Header (hỗ trợ .rar từ Drive)
+                # [Auto-detect] Láº¥y tÃªn file vÃ  Ä‘uÃ´i file tá»« Header (há»— trá»£ .rar tá»« Drive)
                 fname = ""
                 if "Content-Disposition" in resp.headers:
                     cd = resp.headers["Content-Disposition"]
@@ -1808,10 +1808,10 @@ class SetupApp:
                     fname = url.split("?")[0].rstrip("/").split("/")[-1] or "archive"
 
                 ext = os.path.splitext(fname)[1].lower()
-                if ext not in (".7z", ".zip", ".rar"): ext = ".rar" # Fallback ưu tiên rar cho trường hợp này
+                if ext not in (".7z", ".zip", ".rar"): ext = ".rar" # Fallback Æ°u tiÃªn rar cho trÆ°á»ng há»£p nÃ y
                 archive_path = os.path.join(tmp_root, f"archive{ext}")
 
-                self.root.after(0, lambda: self._log(f"⬇  Đang tải: {fname}"))
+                self.root.after(0, lambda: self._log(f"â¬‡  Äang táº£i: {fname}"))
                 total     = int(resp.headers.get("content-length", 0))
                 done      = 0
                 last_pct  = -1
@@ -1828,28 +1828,28 @@ class SetupApp:
                                         self._log(f"   {p:3d}%  ({d//1024:,} KB / {t//1024:,} KB)"))
                 size_kb = os.path.getsize(archive_path) // 1024
                 self.root.after(0, lambda s=size_kb: self._log(
-                    f"✅  Tải xong — {s:,} KB"))
+                    f"âœ…  Táº£i xong â€” {s:,} KB"))
 
             except Exception as e:
                 code = getattr(getattr(e, "response", None), "status_code", "")
                 if code == 403:
-                    self.root.after(0, lambda: self._log(f"❌  Lỗi 403 Forbidden: Link tải đã hết hạn hoặc bị chặn.\n   Hãy cập nhật URL mới trong code hoặc Mod Manager."))
+                    self.root.after(0, lambda: self._log(f"âŒ  Lá»—i 403 Forbidden: Link táº£i Ä‘Ã£ háº¿t háº¡n hoáº·c bá»‹ cháº·n.\n   HÃ£y cáº­p nháº­t URL má»›i trong code hoáº·c Mod Manager."))
                 else:
-                    self.root.after(0, lambda: self._log(f"❌  Lỗi tải ({code}): {e}"))
+                    self.root.after(0, lambda: self._log(f"âŒ  Lá»—i táº£i ({code}): {e}"))
                 return False
 
-            # ────────────────────────────────────────────────────────
-            # GIAI ĐOẠN 2 — EXTRACT vào thư mục tạm riêng
-            # ────────────────────────────────────────────────────────
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            # GIAI ÄOáº N 2 â€” EXTRACT vÃ o thÆ° má»¥c táº¡m riÃªng
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             extract_dir = os.path.join(tmp_root, "extracted")
             os.makedirs(extract_dir, exist_ok=True)
 
-            self.root.after(0, lambda: self._log(f"📦  Đang giải nén ({ext})..."))
+            self.root.after(0, lambda: self._log(f"ðŸ“¦  Äang giáº£i nÃ©n ({ext})..."))
             try:
                 if ext == ".7z":
                     if not HAS_PY7ZR:
                         self.root.after(0, lambda: self._log(
-                            "❌  Thiếu py7zr — chạy: pip install py7zr"))
+                            "âŒ  Thiáº¿u py7zr â€” cháº¡y: pip install py7zr"))
                         return False
                     import py7zr
                     with py7zr.SevenZipFile(archive_path, mode="r") as z:
@@ -1862,42 +1862,42 @@ class SetupApp:
                 elif ext == ".rar":
                     if not HAS_RAR:
                         self.root.after(0, lambda: self._log(
-                            "❌  Thiếu rarfile — chạy: pip install rarfile\n"
-                            "   Cần cài thêm unrar.exe: https://www.rarlab.com/rar_add.htm"))
+                            "âŒ  Thiáº¿u rarfile â€” cháº¡y: pip install rarfile\n"
+                            "   Cáº§n cÃ i thÃªm unrar.exe: https://www.rarlab.com/rar_add.htm"))
                         return False
                     import rarfile
                     with rarfile.RarFile(archive_path) as rf:
                         rf.extractall(path=extract_dir)
 
             except Exception as e:
-                self.root.after(0, lambda: self._log(f"❌  Lỗi giải nén: {e}"))
+                self.root.after(0, lambda: self._log(f"âŒ  Lá»—i giáº£i nÃ©n: {e}"))
                 return False
 
-            # ────────────────────────────────────────────────────────
-            # GIAI ĐOẠN 3 — INSTALL: smart-copy đúng đường dẫn
-            # ────────────────────────────────────────────────────────
-            # Phát hiện cấu trúc archive:
-            #   • Nếu có duy nhất 1 thư mục con ở root → copy NỘI DUNG thư mục đó
-            #   • Ngược lại (nhiều file/folder) → copy TẤT CẢ vào target
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            # GIAI ÄOáº N 3 â€” INSTALL: smart-copy Ä‘Ãºng Ä‘Æ°á»ng dáº«n
+            # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            # PhÃ¡t hiá»‡n cáº¥u trÃºc archive:
+            #   â€¢ Náº¿u cÃ³ duy nháº¥t 1 thÆ° má»¥c con á»Ÿ root â†’ copy Ná»˜I DUNG thÆ° má»¥c Ä‘Ã³
+            #   â€¢ NgÆ°á»£c láº¡i (nhiá»u file/folder) â†’ copy Táº¤T Cáº¢ vÃ o target
             top_items = os.listdir(extract_dir)
             if (len(top_items) == 1
                     and os.path.isdir(os.path.join(extract_dir, top_items[0]))):
                 source_dir = os.path.join(extract_dir, top_items[0])
                 self.root.after(0, lambda n=top_items[0]: self._log(
-                    f"   Phát hiện thư mục gốc trong archive: [{n}] → dùng nội dung bên trong"))
+                    f"   PhÃ¡t hiá»‡n thÆ° má»¥c gá»‘c trong archive: [{n}] â†’ dÃ¹ng ná»™i dung bÃªn trong"))
             else:
                 source_dir = extract_dir
                 self.root.after(0, lambda: self._log(
-                    "   Archive không có thư mục gốc → copy thẳng vào target"))
+                    "   Archive khÃ´ng cÃ³ thÆ° má»¥c gá»‘c â†’ copy tháº³ng vÃ o target"))
 
             os.makedirs(target_dir, exist_ok=True)
             items   = os.listdir(source_dir)
             total_i = len(items)
             if mod and mod.get("id") == "paldefender":
                 self.root.after(0, lambda: self._log(
-                    "♻️ [PalDefender] Nếu tệp đã tồn tại sẽ tự thay thế bằng bản mới."))
+                    "â™»ï¸ [PalDefender] Náº¿u tá»‡p Ä‘Ã£ tá»“n táº¡i sáº½ tá»± thay tháº¿ báº±ng báº£n má»›i."))
             self.root.after(0, lambda t=total_i, d=target_dir: self._log(
-                f"📋  Sao chép {t} mục → {d}"))
+                f"ðŸ“‹  Sao chÃ©p {t} má»¥c â†’ {d}"))
 
             for i, item in enumerate(items, 1):
                 src = os.path.join(source_dir, item)
@@ -1918,9 +1918,9 @@ class SetupApp:
                         self._log(f"   [{idx}/{t}]  {n}"))
                 except Exception as e:
                     self.root.after(0, lambda n=item, e=e:
-                        self._log(f"   ⚠️  {n}: {e}"))
+                        self._log(f"   âš ï¸  {n}: {e}"))
 
-            # Xác nhận cài thành công bằng "probe" (nếu mod có khai báo).
+            # XÃ¡c nháº­n cÃ i thÃ nh cÃ´ng báº±ng "probe" (náº¿u mod cÃ³ khai bÃ¡o).
             install_ok = True
             if mod and mod.get("probe"):
                 root_dir = self._pal_root()
@@ -1930,56 +1930,56 @@ class SetupApp:
 
             if install_ok:
                 self.root.after(0, lambda: self._log(
-                    f"✅  [{label}]  Cài đặt hoàn tất!\n"
-                    f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"))
+                    f"âœ…  [{label}]  CÃ i Ä‘áº·t hoÃ n táº¥t!\n"
+                    f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”"))
                 if success_cb:
                     self.root.after(0, success_cb)
                 done_ok = True
             else:
                 self.root.after(0, lambda: self._log(
-                    f"⚠️  [{label}] Giải nén xong nhưng chưa xác nhận được probe mod.\n"
-                    f"   Chưa đánh dấu 'Đang bật'. Hãy kiểm tra lại thư mục cài đặt."))
+                    f"âš ï¸  [{label}] Giáº£i nÃ©n xong nhÆ°ng chÆ°a xÃ¡c nháº­n Ä‘Æ°á»£c probe mod.\n"
+                    f"   ChÆ°a Ä‘Ã¡nh dáº¥u 'Äang báº­t'. HÃ£y kiá»ƒm tra láº¡i thÆ° má»¥c cÃ i Ä‘áº·t."))
             self.root.after(300, self._refresh_mod_cards)
 
         except Exception as e:
-            self.root.after(0, lambda: self._log(f"❌  [{label}]  Lỗi không xác định: {e}"))
+            self.root.after(0, lambda: self._log(f"âŒ  [{label}]  Lá»—i khÃ´ng xÃ¡c Ä‘á»‹nh: {e}"))
         finally:
-            # Dọn sạch temp dù thành công hay thất bại
+            # Dá»n sáº¡ch temp dÃ¹ thÃ nh cÃ´ng hay tháº¥t báº¡i
             shutil.rmtree(tmp_root, ignore_errors=True)
         return done_ok
 
     def _build_mods_tab(self, parent):
-        # ── Toolbar ───────────────────────────────────────────────
+        # â”€â”€ Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         bar = tk.Frame(parent, bg=self.BG, pady=6)
         bar.pack(fill="x", padx=14)
-        tk.Label(bar, text="🎮  Mod Manager",
+        tk.Label(bar, text="ðŸŽ®  Mod Manager",
                  bg=self.BG, fg=self.ACCENT,
                  font=("Segoe UI", 14, "bold")).pack(side="left")
         tk.Label(bar,
-                 text="Tải & quản lý mods — bật/tắt không cần xóa file",
+                 text="Táº£i & quáº£n lÃ½ mods â€” báº­t/táº¯t khÃ´ng cáº§n xÃ³a file",
                  bg=self.BG, fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(side="left", padx=12)
-        tk.Button(bar, text="🔄  Làm mới",
+        tk.Button(bar, text="ðŸ”„  LÃ m má»›i",
                   bg="#1a1a1a", fg="#aaa", relief="flat",
                   padx=10, pady=4, cursor="hand2",
                   command=self._refresh_mod_cards
                   ).pack(side="right")
 
-        # ── Scrollable area ───────────────────────────────────────
+        # â”€â”€ Scrollable area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         self._mod_cards_frame = self._scrollable(parent)
 
-        # ── Custom mod section ────────────────────────────────────
+        # â”€â”€ Custom mod section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         sep_f = tk.Frame(parent, bg=self.BG)
         sep_f.pack(fill="x", padx=14, pady=(6, 0))
         tk.Frame(sep_f, bg="#222", height=1).pack(fill="x", pady=(0, 8))
-        tk.Label(sep_f, text="➕  Cài mod từ link tùy chỉnh",
+        tk.Label(sep_f, text="âž•  CÃ i mod tá»« link tÃ¹y chá»‰nh",
                  bg=self.BG, fg="#888",
                  font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
         cust = tk.Frame(parent, bg=self.BG2, padx=12, pady=8)
         cust.pack(fill="x", padx=14, pady=(4, 8))
 
-        tk.Label(cust, text="Tên:", bg=self.BG2, fg=self.FG,
+        tk.Label(cust, text="TÃªn:", bg=self.BG2, fg=self.FG,
                  font=("Segoe UI", 9), width=8, anchor="e"
                  ).grid(row=0, column=0, sticky="e", padx=(0, 6), pady=3)
         self._custom_name = tk.Entry(cust, bg=self.ENTRY_BG, fg=self.FG,
@@ -1988,7 +1988,7 @@ class SetupApp:
         self._custom_name.insert(0, "My Mod")
         self._custom_name.grid(row=0, column=1, sticky="ew", ipady=4, padx=(0, 8))
 
-        tk.Label(cust, text="Giải nén vào:", bg=self.BG2, fg=self.FG,
+        tk.Label(cust, text="Giáº£i nÃ©n vÃ o:", bg=self.BG2, fg=self.FG,
                  font=("Segoe UI", 9), width=12, anchor="e"
                  ).grid(row=0, column=2, sticky="e", padx=(0, 6))
         self._custom_target = tk.Entry(cust, bg=self.ENTRY_BG, fg=self.FG,
@@ -2007,7 +2007,7 @@ class SetupApp:
         self._custom_url.insert(0, "https://...")
         self._custom_url.grid(row=1, column=1, columnspan=3, sticky="ew",
                                ipady=4, pady=(4, 0))
-        tk.Button(cust, text="⬇ Cài",
+        tk.Button(cust, text="â¬‡ CÃ i",
                   bg=self.BTN_OK, fg="white", relief="flat",
                   padx=12, pady=4, cursor="hand2",
                   command=self._install_custom_mod
@@ -2017,37 +2017,37 @@ class SetupApp:
         self._refresh_mod_cards()
 
     def _build_server_setup_tab(self, parent):
-        # ── Toolbar ───────────────────────────────────────────────
+        # â”€â”€ Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         bar = tk.Frame(parent, bg=self.BG, pady=6)
         bar.pack(fill="x", padx=14)
-        tk.Label(bar, text="🏗️  Server Setup",
+        tk.Label(bar, text="ðŸ—ï¸  Server Setup",
                  bg=self.BG, fg=self.ACCENT,
                  font=("Segoe UI", 14, "bold")).pack(side="left")
         tk.Label(bar,
-                 text="Tạo server mới hoặc import đường dẫn server hiện có",
+                 text="Táº¡o server má»›i hoáº·c import Ä‘Æ°á»ng dáº«n server hiá»‡n cÃ³",
                  bg=self.BG, fg=self.FG_DIM,
                  font=("Segoe UI", 9)).pack(side="left", padx=12)
 
-        # ── Main content ──────────────────────────────────────────
+        # â”€â”€ Main content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         main = tk.Frame(parent, bg=self.BG)
         main.pack(fill="both", expand=True, padx=14, pady=(10, 0))
 
-        # Tạo Server Mới
+        # Táº¡o Server Má»›i
         create_f = tk.Frame(main, bg=self.BG2, padx=20, pady=20)
         create_f.pack(fill="x", pady=(0, 20))
-        tk.Label(create_f, text="🚀  Tạo Server Mới",
+        tk.Label(create_f, text="ðŸš€  Táº¡o Server Má»›i",
                  bg=self.BG2, fg="#00ff88",
                  font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 10))
         tk.Label(create_f,
-                 text="Tự động tải SteamCMD và cài đặt Palworld Dedicated Server mới nhất.\n"
-                     "Server sẽ cài theo thư mục bạn chọn ở cửa sổ cài đặt.",
+                 text="Tá»± Ä‘á»™ng táº£i SteamCMD vÃ  cÃ i Ä‘áº·t Palworld Dedicated Server má»›i nháº¥t.\n"
+                     "Server sáº½ cÃ i theo thÆ° má»¥c báº¡n chá»n á»Ÿ cá»­a sá»• cÃ i Ä‘áº·t.",
                  bg=self.BG2, fg=self.FG, font=("Segoe UI", 9), justify="left").pack(anchor="w", pady=(0, 15))
-        tk.Button(create_f, text="⬇  Tải & Cài Đặt Server",
+        tk.Button(create_f, text="â¬‡  Táº£i & CÃ i Äáº·t Server",
                   bg=self.BTN_OK, fg="white", relief="flat",
                   padx=20, pady=12, font=("Segoe UI", 10, "bold"), cursor="hand2",
                   command=self._create_new_server).pack(anchor="w")
 
-        # Inline installer (ẩn mặc định, bấm "Tạo Server Mới" sẽ mở tại đây)
+        # Inline installer (áº©n máº·c Ä‘á»‹nh, báº¥m "Táº¡o Server Má»›i" sáº½ má»Ÿ táº¡i Ä‘Ã¢y)
         self._inline_installer_open = False
         self._inline_installer_host = main
         self._inline_installer_frame = tk.Frame(main, bg="#0a0a0a", padx=16, pady=12)
@@ -2066,68 +2066,68 @@ class SetupApp:
             pass
         self._build_inline_installer_ui(self._inline_installer_frame)
 
-        # Import Đường Dẫn
+        # Import ÄÆ°á»ng Dáº«n
         import_f = tk.Frame(main, bg=self.BG2, padx=20, pady=20)
         import_f.pack(fill="x")
-        tk.Label(import_f, text="📂  Import Đường Dẫn Server",
+        tk.Label(import_f, text="ðŸ“‚  Import ÄÆ°á»ng Dáº«n Server",
                  bg=self.BG2, fg="#00ccff",
                  font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 10))
         tk.Label(import_f,
-                 text="Chọn file PalServer.exe từ server đã cài đặt để cấu hình.\n"
-                      "Đường dẫn sẽ được lưu vào manager_config.json.",
+                 text="Chá»n file PalServer.exe tá»« server Ä‘Ã£ cÃ i Ä‘áº·t Ä‘á»ƒ cáº¥u hÃ¬nh.\n"
+                      "ÄÆ°á»ng dáº«n sáº½ Ä‘Æ°á»£c lÆ°u vÃ o manager_config.json.",
                  bg=self.BG2, fg=self.FG, font=("Segoe UI", 9), justify="left").pack(anchor="w", pady=(0, 15))
-        tk.Button(import_f, text="📂  Chọn PalServer.exe",
+        tk.Button(import_f, text="ðŸ“‚  Chá»n PalServer.exe",
                   bg=self.BTN_OK, fg="white", relief="flat",
                   padx=20, pady=12, font=("Segoe UI", 10, "bold"), cursor="hand2",
                   command=self._import_server_path).pack(anchor="w")
 
     def _create_new_server(self):
-        """Bật/tắt inline Manager ServerPal Installer ngay trong tab Tạo server."""
+        """Báº­t/táº¯t inline Manager ServerPal Installer ngay trong tab Táº¡o server."""
         if not hasattr(self, "_inline_installer_frame"):
             return
         if self._inline_installer_open:
             self._inline_installer_frame.pack_forget()
             self._inline_installer_open = False
-            self._log("ℹ️ Đã ẩn Manager ServerPal Installer.")
+            self._log("â„¹ï¸ ÄÃ£ áº©n Manager ServerPal Installer.")
         else:
             self._inline_installer_frame.pack(fill="x", pady=(0, 20))
             self._inline_installer_open = True
-            self._log("ℹ️ Đã mở Manager ServerPal Installer ngay trong tab Tạo server.")
+            self._log("â„¹ï¸ ÄÃ£ má»Ÿ Manager ServerPal Installer ngay trong tab Táº¡o server.")
 
     def _build_inline_installer_ui(self, host):
-        tk.Label(host, text="🚀  MANAGER SERVERPAL INSTALLER",
+        tk.Label(host, text="ðŸš€  MANAGER SERVERPAL INSTALLER",
                  bg="#0a0a0a", fg="#00ffcc",
                  font=("Segoe UI", 14, "bold")).pack(anchor="center", pady=(0, 10))
 
-        tk.Label(host, text="1. Thư mục cài SteamCMD:", bg="#0a0a0a", fg="#aaa",
+        tk.Label(host, text="1. ThÆ° má»¥c cÃ i SteamCMD:", bg="#0a0a0a", fg="#aaa",
                  font=("Segoe UI", 9)).pack(anchor="w")
         f1 = tk.Frame(host, bg="#0a0a0a")
         f1.pack(fill="x", pady=(2, 8))
         tk.Entry(f1, textvariable=self._inline_steamcmd_dir, bg="#161616", fg="white",
                  bd=0, font=("Consolas", 10), insertbackground="white").pack(
                     side="left", fill="x", expand=True, ipady=6, padx=(0, 5))
-        tk.Button(f1, text="📂", bg="#222", fg="white", relief="flat",
+        tk.Button(f1, text="ðŸ“‚", bg="#222", fg="white", relief="flat",
                   command=lambda: self._inline_browse(self._inline_steamcmd_dir)).pack(side="left")
 
-        tk.Label(host, text="2. Thư mục cài PalServer:", bg="#0a0a0a", fg="#aaa",
+        tk.Label(host, text="2. ThÆ° má»¥c cÃ i PalServer:", bg="#0a0a0a", fg="#aaa",
                  font=("Segoe UI", 9)).pack(anchor="w")
         f2 = tk.Frame(host, bg="#0a0a0a")
         f2.pack(fill="x", pady=(2, 10))
         tk.Entry(f2, textvariable=self._inline_install_dir, bg="#161616", fg="white",
                  bd=0, font=("Consolas", 10), insertbackground="white").pack(
                     side="left", fill="x", expand=True, ipady=6, padx=(0, 5))
-        tk.Button(f2, text="📂", bg="#222", fg="white", relief="flat",
+        tk.Button(f2, text="ðŸ“‚", bg="#222", fg="white", relief="flat",
                   command=lambda: self._inline_browse(self._inline_install_dir)).pack(side="left")
 
         self._btn_inline_install = tk.Button(
-            host, text="⬇  BẮT ĐẦU CÀI ĐẶT",
+            host, text="â¬‡  Báº®T Äáº¦U CÃ€I Äáº¶T",
             bg="#006644", fg="white", relief="flat", pady=10,
             font=("Segoe UI", 11, "bold"), cursor="hand2",
             command=self._start_inline_install
         )
         self._btn_inline_install.pack(fill="x", pady=(0, 10))
 
-        tk.Label(host, text="Tiến trình:", bg="#0a0a0a", fg="#666", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(host, text="Tiáº¿n trÃ¬nh:", bg="#0a0a0a", fg="#666", font=("Segoe UI", 9)).pack(anchor="w")
         self._inline_console = scrolledtext.ScrolledText(
             host, bg="#050505", fg="#00ff88", font=("Consolas", 9), bd=0, height=10
         )
@@ -2166,7 +2166,7 @@ class SetupApp:
             return
         chars = ["|", "/", "-", "\\"]
         c = chars[self._inline_spin_idx % 4]
-        self._btn_inline_install.config(text=f"⏳ {c} ĐANG CÀI ĐẶT...")
+        self._btn_inline_install.config(text=f"â³ {c} ÄANG CÃ€I Äáº¶T...")
         self._inline_spin_idx += 1
         self.root.after(100, self._animate_inline_spin)
 
@@ -2178,7 +2178,7 @@ class SetupApp:
             os.makedirs(s_dir, exist_ok=True)
             os.makedirs(p_dir, exist_ok=True)
             if not os.path.isfile(s_exe):
-                self._inline_log("⬇ Bắt đầu tải SteamCMD...")
+                self._inline_log("â¬‡ Báº¯t Ä‘áº§u táº£i SteamCMD...")
                 zip_url = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
                 zip_path = os.path.join(s_dir, "steamcmd.zip")
                 with urllib.request.urlopen(zip_url) as resp, open(zip_path, "wb") as f:
@@ -2194,13 +2194,13 @@ class SetupApp:
                         if total:
                             pct = int(downloaded * 100 / total)
                             if pct % 5 == 0:
-                                self._inline_log_update(f"⏳ Downloading SteamCMD: {pct}%")
-                self._inline_log("📦 Đang giải nén SteamCMD...")
+                                self._inline_log_update(f"â³ Downloading SteamCMD: {pct}%")
+                self._inline_log("ðŸ“¦ Äang giáº£i nÃ©n SteamCMD...")
                 with zipfile.ZipFile(zip_path, "r") as z:
                     z.extractall(s_dir)
                 os.remove(zip_path)
 
-            self._inline_log("🚀 Đang chạy SteamCMD để cài PalServer (2394010)...")
+            self._inline_log("ðŸš€ Äang cháº¡y SteamCMD Ä‘á»ƒ cÃ i PalServer (2394010)...")
             cmd = [s_exe, "+login", "anonymous", "+force_install_dir", p_dir, "+app_update", "2394010", "validate", "+quit"]
             proc = subprocess.Popen(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -2237,23 +2237,23 @@ class SetupApp:
                     cfg["SERVER_EXE"] = _resolve_server_exe_path(final_exe)
                     cfg["STEAMCMD_EXE"] = s_exe
                     save_config(cfg)
-                    self._inline_log("✅ Cài đặt server thành công.")
-                    self._inline_log(f"📂 Server: {final_exe}")
+                    self._inline_log("âœ… CÃ i Ä‘áº·t server thÃ nh cÃ´ng.")
+                    self._inline_log(f"ðŸ“‚ Server: {final_exe}")
                     self.root.after(0, self._load_to_ui)
                 else:
-                    self._inline_log("⚠️ Không tìm thấy PalServer.exe!")
+                    self._inline_log("âš ï¸ KhÃ´ng tÃ¬m tháº¥y PalServer.exe!")
             else:
-                self._inline_log(f"❌ Lỗi code {proc.returncode}")
+                self._inline_log(f"âŒ Lá»—i code {proc.returncode}")
         except Exception as e:
-            self._inline_log(f"❌ Lỗi: {e}")
+            self._inline_log(f"âŒ Lá»—i: {e}")
         self._inline_installing = False
         self.root.after(0, lambda: self._btn_inline_install.config(
-            text="⬇  BẮT ĐẦU CÀI ĐẶT", bg="#006644", state="normal"))
+            text="â¬‡  Báº®T Äáº¦U CÃ€I Äáº¶T", bg="#006644", state="normal"))
 
     def _import_server_path(self):
-        """Import đường dẫn PalServer.exe."""
+        """Import Ä‘Æ°á»ng dáº«n PalServer.exe."""
         file_path = filedialog.askopenfilename(
-            title="Chọn file PalServer.exe",
+            title="Chá»n file PalServer.exe",
             filetypes=[("Executable files", "*.exe")],
             initialdir="C:/"
         )
@@ -2262,14 +2262,14 @@ class SetupApp:
             cfg["SERVER_EXE"] = _resolve_server_exe_path(file_path)
             save_config(cfg)
             self._load_to_ui()  # Refresh UI
-            self._log(f"✅ Đã import đường dẫn: {file_path}")
-            messagebox.showinfo("Thành công", f"Đã cập nhật đường dẫn server:\n{file_path}")
+            self._log(f"âœ… ÄÃ£ import Ä‘Æ°á»ng dáº«n: {file_path}")
+            messagebox.showinfo("ThÃ nh cÃ´ng", f"ÄÃ£ cáº­p nháº­t Ä‘Æ°á»ng dáº«n server:\n{file_path}")
         elif file_path:
-            messagebox.showerror("Lỗi", "Vui lòng chọn file PalServer.exe")
-        # Nếu cancel, không làm gì
+            messagebox.showerror("Lá»—i", "Vui lÃ²ng chá»n file PalServer.exe")
+        # Náº¿u cancel, khÃ´ng lÃ m gÃ¬
 
     def _refresh_mod_cards(self):
-        """Vẽ lại các mod card với trạng thái hiện tại."""
+        """Váº½ láº¡i cÃ¡c mod card vá»›i tráº¡ng thÃ¡i hiá»‡n táº¡i."""
         for w in self._mod_cards_frame.winfo_children():
             w.destroy()
 
@@ -2283,16 +2283,16 @@ class SetupApp:
         installed_ver = self._get_installed_ver(mod.get("id"))
         has_update = (installed_ver and installed_ver != mod["version"])
 
-        # Màu + nhãn theo trạng thái
+        # MÃ u + nhÃ£n theo tráº¡ng thÃ¡i
         status_meta = {
-            "enabled":       ("#00ff88", "🟢 Đang bật",   "#0d2a1a"),
-            "disabled":      ("#ff9900", "🟡 Đang tắt",   "#2a1e00"),
-            "not_installed": ("#555555", "⚫ Chưa cài",    "#111120"),
-            "no_root":       ("#ff5555", "❌ Chưa cấu hình","#2a0000"),
+            "enabled":       ("#00ff88", "ðŸŸ¢ Äang báº­t",   "#0d2a1a"),
+            "disabled":      ("#ff9900", "ðŸŸ¡ Äang táº¯t",   "#2a1e00"),
+            "not_installed": ("#555555", "âš« ChÆ°a cÃ i",    "#111120"),
+            "no_root":       ("#ff5555", "âŒ ChÆ°a cáº¥u hÃ¬nh","#2a0000"),
         }
         s_color, s_text, card_bg = status_meta.get(status, ("#888", "?", "#111120"))
 
-        # Viền nổi bật theo trạng thái
+        # Viá»n ná»•i báº­t theo tráº¡ng thÃ¡i
         border_colors = {
             "enabled": "#1a5a38", "disabled": "#5a3a00",
             "not_installed": "#2a2a4a", "no_root": "#5a0000",
@@ -2303,7 +2303,7 @@ class SetupApp:
                         highlightbackground=border_c, highlightthickness=1)
         card.pack(fill="x", padx=14, pady=5)
 
-        # ── Header ────────────────────────────────────────────────
+        # â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         hdr = tk.Frame(card, bg=card_bg, padx=12, pady=8)
         hdr.pack(fill="x")
 
@@ -2313,20 +2313,20 @@ class SetupApp:
         
         ver_txt = f"v{mod['version']}"
         if installed_ver:
-            ver_txt += f" (Đang cài: {installed_ver})"
+            ver_txt += f" (Äang cÃ i: {installed_ver})"
         tk.Label(hdr, text=ver_txt,
                  bg=card_bg, fg="#555",
                  font=("Consolas", 8)).pack(side="left", padx=8)
         tk.Label(hdr, text=s_text, bg=card_bg, fg=s_color,
                  font=("Segoe UI", 9, "bold")).pack(side="right")
 
-        # ── Description ───────────────────────────────────────────
+        # â”€â”€ Description â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         tk.Label(card, text=mod["desc"],
                  bg=card_bg, fg="#777",
                  font=("Segoe UI", 9), anchor="w"
                  ).pack(fill="x", padx=14, pady=(0, 4))
 
-        # ── URL row (ẩn với 2 mod mặc định để UI gọn) ─────────────
+        # â”€â”€ URL row (áº©n vá»›i 2 mod máº·c Ä‘á»‹nh Ä‘á»ƒ UI gá»n) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         url_var = tk.StringVar(value=mod["url"])
         hide_url_for_default = mod.get("id") in {"paldefender", "ue4ss"}
         if not hide_url_for_default:
@@ -2341,33 +2341,33 @@ class SetupApp:
                              insertbackground=self.ACCENT)
             url_e.pack(side="left", fill="x", expand=True, ipady=3, padx=(6, 0))
 
-        # ── Buttons — bố cục thông minh theo trạng thái ──────────
+        # â”€â”€ Buttons â€” bá»‘ cá»¥c thÃ´ng minh theo tráº¡ng thÃ¡i â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         btn_f = tk.Frame(card, bg=card_bg, padx=12, pady=8)
         btn_f.pack(fill="x")
 
         if status == "no_root":
-            # Chưa có đường dẫn server → hiển thị hướng dẫn
+            # ChÆ°a cÃ³ Ä‘Æ°á»ng dáº«n server â†’ hiá»ƒn thá»‹ hÆ°á»›ng dáº«n
             tk.Label(btn_f,
-                     text="→ Vào tab Cấu Hình, điền SERVER_EXE rồi nhấn Lưu",
+                     text="â†’ VÃ o tab Cáº¥u HÃ¬nh, Ä‘iá»n SERVER_EXE rá»“i nháº¥n LÆ°u",
                      bg=card_bg, fg="#ff5555",
                      font=("Segoe UI", 9)).pack(side="left")
 
         elif status == "not_installed":
-            # Chưa cài → nút chính: tải + cài + tự bật
-            tk.Button(btn_f, text="⬇  Tải & Cài đặt",
+            # ChÆ°a cÃ i â†’ nÃºt chÃ­nh: táº£i + cÃ i + tá»± báº­t
+            tk.Button(btn_f, text="â¬‡  Táº£i & CÃ i Ä‘áº·t",
                       bg=self.BTN_OK, fg="white",
                       relief="flat", padx=16, pady=7,
                       font=("Segoe UI", 10, "bold"), cursor="hand2",
                       command=lambda m=mod, uv=url_var: self._smart_action(m, uv.get())
                       ).pack(side="left", padx=(0, 6))
             tk.Label(btn_f,
-                     text="← Nhấn để tải và cài tự động",
+                     text="â† Nháº¥n Ä‘á»ƒ táº£i vÃ  cÃ i tá»± Ä‘á»™ng",
                      bg=card_bg, fg="#444",
                      font=("Segoe UI", 8)).pack(side="left")
 
         elif has_update:
-            # Có update -> Nút Cập nhật
-            tk.Button(btn_f, text=f"⬆  Cập nhật (v{mod['version']})",
+            # CÃ³ update -> NÃºt Cáº­p nháº­t
+            tk.Button(btn_f, text=f"â¬†  Cáº­p nháº­t (v{mod['version']})",
                       bg="#0044cc", fg="white",
                       relief="flat", padx=16, pady=7,
                       font=("Segoe UI", 10, "bold"), cursor="hand2",
@@ -2375,56 +2375,56 @@ class SetupApp:
                       ).pack(side="left", padx=(0, 6))
 
         elif status == "disabled":
-            # Đã cài nhưng đang tắt → nút chính: Bật (không tải lại)
-            tk.Button(btn_f, text="🟢  Bật mod",
+            # ÄÃ£ cÃ i nhÆ°ng Ä‘ang táº¯t â†’ nÃºt chÃ­nh: Báº­t (khÃ´ng táº£i láº¡i)
+            tk.Button(btn_f, text="ðŸŸ¢  Báº­t mod",
                       bg=self.BTN_GRN, fg="#00ff88",
                       relief="flat", padx=16, pady=7,
                       font=("Segoe UI", 10, "bold"), cursor="hand2",
                       command=lambda m=mod: self._smart_action(m)
                       ).pack(side="left", padx=(0, 6))
-            # Nút phụ: Cài lại (nếu muốn cập nhật)
-            tk.Button(btn_f, text="🔄  Cài lại",
+            # NÃºt phá»¥: CÃ i láº¡i (náº¿u muá»‘n cáº­p nháº­t)
+            tk.Button(btn_f, text="ðŸ”„  CÃ i láº¡i",
                       bg="#1c1c2e", fg="#888",
                       relief="flat", padx=10, pady=7,
                       font=("Segoe UI", 9), cursor="hand2",
                       command=lambda m=mod, uv=url_var: self._mod_install(m, uv.get())
                       ).pack(side="left", padx=(0, 6))
-            tk.Button(btn_f, text="🗑  Gỡ cài đặt",
+            tk.Button(btn_f, text="ðŸ—‘  Gá»¡ cÃ i Ä‘áº·t",
                       bg="#2a0000", fg="#ff8888",
                       relief="flat", padx=10, pady=7,
                       font=("Segoe UI", 9), cursor="hand2",
                       command=lambda m=mod: self._mod_uninstall(m)
                       ).pack(side="left", padx=(0, 6))
             tk.Label(btn_f,
-                     text="← Đã cài sẵn, chỉ bật lại (không tải lại)",
+                     text="â† ÄÃ£ cÃ i sáºµn, chá»‰ báº­t láº¡i (khÃ´ng táº£i láº¡i)",
                      bg=card_bg, fg="#555",
                      font=("Segoe UI", 8)).pack(side="left")
 
         elif status == "enabled":
-            # Đang chạy → nút tắt + nút cài lại (phụ)
-            tk.Button(btn_f, text="🔴  Tắt mod",
+            # Äang cháº¡y â†’ nÃºt táº¯t + nÃºt cÃ i láº¡i (phá»¥)
+            tk.Button(btn_f, text="ðŸ”´  Táº¯t mod",
                       bg=self.BTN_RED, fg="#ff8888",
                       relief="flat", padx=16, pady=7,
                       font=("Segoe UI", 10, "bold"), cursor="hand2",
                       command=lambda m=mod: self._mod_disable(m)
                       ).pack(side="left", padx=(0, 6))
-            tk.Button(btn_f, text="🔄  Cài lại",
+            tk.Button(btn_f, text="ðŸ”„  CÃ i láº¡i",
                       bg="#1c1c2e", fg="#888",
                       relief="flat", padx=10, pady=7,
                       font=("Segoe UI", 9), cursor="hand2",
                       command=lambda m=mod, uv=url_var: self._mod_install(m, uv.get())
                       ).pack(side="left", padx=(0, 6))
-            tk.Button(btn_f, text="🗑  Gỡ cài đặt",
+            tk.Button(btn_f, text="ðŸ—‘  Gá»¡ cÃ i Ä‘áº·t",
                       bg="#2a0000", fg="#ff8888",
                       relief="flat", padx=10, pady=7,
                       font=("Segoe UI", 9), cursor="hand2",
                       command=lambda m=mod: self._mod_uninstall(m)
                       ).pack(side="left", padx=(0, 6))
 
-        # Nút mở thư mục — luôn hiện nếu target tồn tại
+        # NÃºt má»Ÿ thÆ° má»¥c â€” luÃ´n hiá»‡n náº¿u target tá»“n táº¡i
         target_abs = os.path.join(self._pal_root() or "", mod["target"])
         if os.path.isdir(target_abs):
-            tk.Button(btn_f, text="📂  Mở thư mục",
+            tk.Button(btn_f, text="ðŸ“‚  Má»Ÿ thÆ° má»¥c",
                       bg="#1a1a1a", fg="#666",
                       relief="flat", padx=10, pady=7,
                       font=("Segoe UI", 9), cursor="hand2",
@@ -2432,33 +2432,33 @@ class SetupApp:
                       ).pack(side="right")
 
     def _install_custom_mod(self):
-        """Cài mod từ URL tùy chỉnh."""
+        """CÃ i mod tá»« URL tÃ¹y chá»‰nh."""
         root = self._pal_root()
         if not root:
-            messagebox.showerror("Lỗi", "Chưa cấu hình SERVER_EXE!")
+            messagebox.showerror("Lá»—i", "ChÆ°a cáº¥u hÃ¬nh SERVER_EXE!")
             return
         url    = self._custom_url.get().strip()
         name   = self._custom_name.get().strip() or "Custom Mod"
         target = self._custom_target.get().strip()
         if not url or url == "https://...":
-            messagebox.showwarning("Thiếu URL", "Nhập URL archive vào ô URL!")
+            messagebox.showwarning("Thiáº¿u URL", "Nháº­p URL archive vÃ o Ã´ URL!")
             return
         target_abs = os.path.join(root, target)
         fake_mod = {"id": f"custom_{name}", "url": url, "name": name, "target": target, 
                     "version": datetime.datetime.now().strftime("%Y%m%d-%H%M")}
         self._mod_install(fake_mod, url)
 
-    # ── Console chung (bottom) ─────────────────
+    # â”€â”€ Console chung (bottom) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _build_console(self):
         con_frame = tk.Frame(self.root, bg="#0a0a0a", pady=2)
         con_frame.pack(fill="x", padx=8, pady=(0, 6))
 
         hdr = tk.Frame(con_frame, bg="#0d0d1a")
         hdr.pack(fill="x")
-        tk.Label(hdr, text="📋  Console / Log",
+        tk.Label(hdr, text="ðŸ“‹  Console / Log",
                  bg="#0d0d1a", fg="#666",
                  font=("Segoe UI", 8, "bold")).pack(side="left", padx=10, pady=3)
-        tk.Button(hdr, text="🗑 Xóa", bg="#0d0d1a", fg="#555",
+        tk.Button(hdr, text="ðŸ—‘ XÃ³a", bg="#0d0d1a", fg="#555",
                   relief="flat", font=("Segoe UI", 8),
                   command=lambda: self._console.delete("1.0", tk.END)
                   ).pack(side="right", padx=6, pady=2)
@@ -2470,7 +2470,7 @@ class SetupApp:
         )
         self._console.pack(fill="x")
 
-    # ── Console write ─────────────────────────
+    # â”€â”€ Console write â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _log(self, text: str):
         ts = datetime.datetime.now().strftime("%H:%M:%S")
         line = f"[{ts}] {text}\n"
@@ -2480,8 +2480,8 @@ class SetupApp:
         self._console.configure(state="disabled")
 
     def _run_cmd_realtime(self, cmd: list, cwd: str = None) -> int:
-        """Chạy command và đẩy log stdout/stderr vào console thời gian thực."""
-        self._log(f"▶ Chạy: {' '.join(cmd)}")
+        """Cháº¡y command vÃ  Ä‘áº©y log stdout/stderr vÃ o console thá»i gian thá»±c."""
+        self._log(f"â–¶ Cháº¡y: {' '.join(cmd)}")
         try:
             proc = subprocess.Popen(
                 cmd,
@@ -2501,15 +2501,15 @@ class SetupApp:
                 if not chunk:
                     break
                 if chunk == '\r':
-                    # SteamCMD in progress qua carriage return; show nội dung hiện tại
+                    # SteamCMD in progress qua carriage return; show ná»™i dung hiá»‡n táº¡i
                     progress_line = partial.strip()
                     if progress_line:
                         self.root.after(0, lambda l=progress_line: self._log(l))
-                        # cập nhật progress từ định dạng [ 42%]
+                        # cáº­p nháº­t progress tá»« Ä‘á»‹nh dáº¡ng [ 42%]
                         m = re.search(r"\[(\s*\d{1,3})%\]", progress_line)
                         if m and hasattr(self, '_progress_var'):
                             pct = m.group(1).strip()
-                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiến trình: {p}%"))
+                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiáº¿n trÃ¬nh: {p}%"))
                     partial = ""
                     continue
                 if chunk == '\n':
@@ -2519,18 +2519,18 @@ class SetupApp:
                         m = re.search(r"\[(\s*\d{1,3})%\]", line)
                         if m and hasattr(self, '_progress_var'):
                             pct = m.group(1).strip()
-                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiến trình: {p}%"))
+                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiáº¿n trÃ¬nh: {p}%"))
                     partial = ""
                 else:
                     partial += chunk
-                    # Nếu output đang có % ở giữa dòng
+                    # Náº¿u output Ä‘ang cÃ³ % á»Ÿ giá»¯a dÃ²ng
                     if hasattr(self, '_progress_var'):
                         m = re.search(r"\[(\s*\d{1,3})%\]", partial)
                         if m:
                             pct = m.group(1).strip()
-                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiến trình: {p}%"))
+                            self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiáº¿n trÃ¬nh: {p}%"))
 
-            # Flush last chunk nếu không có newline
+            # Flush last chunk náº¿u khÃ´ng cÃ³ newline
             last_line = partial.strip()
             if last_line:
                 self.root.after(0, lambda l=last_line: self._log(l))
@@ -2538,16 +2538,16 @@ class SetupApp:
                     m = re.search(r"\[(\s*\d{1,3})%\]", last_line)
                     if m:
                         pct = m.group(1).strip()
-                        self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiến trình: {p}%"))
+                        self.root.after(0, lambda p=pct: self._progress_var.set(f"Tiáº¿n trÃ¬nh: {p}%"))
 
             proc.wait()
-            self._log(f"⏹️ Hiện trường lệnh kết thúc. Exit code: {proc.returncode}")
+            self._log(f"â¹ï¸ Hiá»‡n trÆ°á»ng lá»‡nh káº¿t thÃºc. Exit code: {proc.returncode}")
             return proc.returncode
         except Exception as e:
-            self._log(f"❌ Lỗi chạy lệnh: {e}")
+            self._log(f"âŒ Lá»—i cháº¡y lá»‡nh: {e}")
             return -1
 
-    # ── Derive PalWorldSettings.ini path ──────
+    # â”€â”€ Derive PalWorldSettings.ini path â”€â”€â”€â”€â”€â”€
     def _derive_game_ini_path(self, server_exe: str) -> str:
         exe = _resolve_server_exe_path(server_exe)
         if not exe:
@@ -2558,17 +2558,17 @@ class SetupApp:
         )
 
     def _sync_manager_ini_to_game(self, show_popup: bool = True):
-        """Đồng bộ C:\\manager\\PalWorldSettings.ini vào thư mục game theo SERVER_EXE."""
+        """Äá»“ng bá»™ C:\\manager\\PalWorldSettings.ini vÃ o thÆ° má»¥c game theo SERVER_EXE."""
         src = MANAGER_PAL_SETTINGS_INI
         if not os.path.isfile(src):
             if show_popup:
-                messagebox.showerror("Thiếu file", f"Không tìm thấy file nguồn:\n{src}")
+                messagebox.showerror("Thiáº¿u file", f"KhÃ´ng tÃ¬m tháº¥y file nguá»“n:\n{src}")
             return False
         exe = self._vars.get("SERVER_EXE", tk.StringVar()).get().strip()
         dst = self._derive_game_ini_path(exe)
         if not dst:
             if show_popup:
-                messagebox.showerror("Thiếu đường dẫn", "SERVER_EXE chưa hợp lệ. Vui lòng chọn đúng PalServer.exe.")
+                messagebox.showerror("Thiáº¿u Ä‘Æ°á»ng dáº«n", "SERVER_EXE chÆ°a há»£p lá»‡. Vui lÃ²ng chá»n Ä‘Ãºng PalServer.exe.")
             return False
         try:
             os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -2576,16 +2576,16 @@ class SetupApp:
                 ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 backup = f"{dst}.bak_{ts}"
                 shutil.copy2(dst, backup)
-                self._log(f"🗂️ Backup game INI: {backup}")
+                self._log(f"ðŸ—‚ï¸ Backup game INI: {backup}")
             shutil.copy2(src, dst)
-            self._log(f"✅ Đồng bộ INI: {src} -> {dst}")
+            self._log(f"âœ… Äá»“ng bá»™ INI: {src} -> {dst}")
             if show_popup:
-                messagebox.showinfo("Thành công", f"Đã đồng bộ:\n{src}\n\n→\n{dst}")
+                messagebox.showinfo("ThÃ nh cÃ´ng", f"ÄÃ£ Ä‘á»“ng bá»™:\n{src}\n\nâ†’\n{dst}")
             return True
         except Exception as e:
             if show_popup:
-                messagebox.showerror("Lỗi đồng bộ INI", str(e))
-            self._log(f"❌ Lỗi đồng bộ INI: {e}")
+                messagebox.showerror("Lá»—i Ä‘á»“ng bá»™ INI", str(e))
+            self._log(f"âŒ Lá»—i Ä‘á»“ng bá»™ INI: {e}")
             return False
 
     def _manager_cfg_to_ini_updates(self, cfg: dict) -> dict:
@@ -2646,7 +2646,7 @@ class SetupApp:
         return updates
 
     def _update_game_ini_from_manager_cfg(self, cfg: dict) -> bool:
-        """Merge các field AppConfig quan trọng vào PalWorldSettings.ini của game."""
+        """Merge cÃ¡c field AppConfig quan trá»ng vÃ o PalWorldSettings.ini cá»§a game."""
         exe = self._vars.get("SERVER_EXE", tk.StringVar()).get().strip()
         ini_path = self._derive_game_ini_path(exe)
         if not ini_path or not os.path.isfile(ini_path):
@@ -2719,10 +2719,10 @@ class SetupApp:
             content = re.sub(r'OptionSettings=\(.+\)', new_opt, content, flags=re.DOTALL)
             with open(ini_path, "w", encoding="utf-8") as f:
                 f.write(content)
-            self._log(f"✅ Đã map AppConfig -> INI game: {ini_path}")
+            self._log(f"âœ… ÄÃ£ map AppConfig -> INI game: {ini_path}")
             return True
         except Exception as e:
-            self._log(f"⚠️ Không thể map AppConfig vào INI game: {e}")
+            self._log(f"âš ï¸ KhÃ´ng thá»ƒ map AppConfig vÃ o INI game: {e}")
             return False
 
     def _update_ini_label(self):
@@ -2730,9 +2730,9 @@ class SetupApp:
         if exe:
             derived = self._derive_game_ini_path(exe)
             if hasattr(self, "_lbl_ini_path"):
-                self._lbl_ini_path.config(text=f"⬆ tự tính → {derived}")
+                self._lbl_ini_path.config(text=f"â¬† tá»± tÃ­nh â†’ {derived}")
 
-    # ── Load config → UI ──────────────────────
+    # â”€â”€ Load config â†’ UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _load_to_ui(self):
         cfg = load_config()
         for key, var in self._vars.items():
@@ -2740,44 +2740,44 @@ class SetupApp:
         # Update steamcmd label if tab already built
         if hasattr(self, "_lbl_steamcmd_path"):
             self._lbl_steamcmd_path.config(
-                text=cfg.get("STEAMCMD_EXE", "(chưa cấu hình)"))
+                text=cfg.get("STEAMCMD_EXE", "(chÆ°a cáº¥u hÃ¬nh)"))
         self._update_ini_label()
-        self._log("Đã tải cấu hình từ " + CONFIG_FILE)
+        self._log("ÄÃ£ táº£i cáº¥u hÃ¬nh tá»« " + CONFIG_FILE)
 
-    # ── Save UI → config ─────────────────────
+    # â”€â”€ Save UI â†’ config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _save(self):
         data = {k: v.get().strip() for k, v in self._vars.items()}
         if save_config(data):
             if hasattr(self, "_lbl_steamcmd_path"):
                 self._lbl_steamcmd_path.config(
-                    text=data.get("STEAMCMD_EXE", "(chưa cấu hình)"))
-            # Tự đồng bộ INI nếu có file mẫu trong thư mục manager.
+                    text=data.get("STEAMCMD_EXE", "(chÆ°a cáº¥u hÃ¬nh)"))
+            # Tá»± Ä‘á»“ng bá»™ INI náº¿u cÃ³ file máº«u trong thÆ° má»¥c manager.
             if os.path.isfile(MANAGER_PAL_SETTINGS_INI):
                 self._sync_manager_ini_to_game(show_popup=False)
             self._update_game_ini_from_manager_cfg(data)
-            self._log("✅ Đã lưu cấu hình")
-            messagebox.showinfo("Thành công", "Đã lưu manager_config.json!")
+            self._log("âœ… ÄÃ£ lÆ°u cáº¥u hÃ¬nh")
+            messagebox.showinfo("ThÃ nh cÃ´ng", "ÄÃ£ lÆ°u manager_config.json!")
 
-    # ── Launch serverpal.py ───────────────────
+    # â”€â”€ Launch serverpal.py â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _launch_serverpal(self):
-        # Tránh khởi động serverpal trong lúc auto-install requirements đang chạy.
+        # TrÃ¡nh khá»Ÿi Ä‘á»™ng serverpal trong lÃºc auto-install requirements Ä‘ang cháº¡y.
         if getattr(self, "_auto_pip_running", False):
             messagebox.showwarning(
-                "Đang cài packages",
-                "setup.py đang auto-install dependencies. Đợi cài xong rồi hãy Start serverpal.py."
+                "Äang cÃ i packages",
+                "setup.py Ä‘ang auto-install dependencies. Äá»£i cÃ i xong rá»“i hÃ£y Start serverpal.py."
             )
             return
 
         if self._serverpal_proc and self._serverpal_proc.poll() is None:
-            messagebox.showwarning("Đang chạy", "Bảng điều khiển đã đang chạy!")
+            messagebox.showwarning("Äang cháº¡y", "Báº£ng Ä‘iá»u khiá»ƒn Ä‘Ã£ Ä‘ang cháº¡y!")
             return
         target_serverpal = SERVERPAL_EXE if os.path.isfile(SERVERPAL_EXE) else SERVERPAL_PY
         if not os.path.isfile(target_serverpal):
-            messagebox.showerror("Lỗi", f"Không tìm thấy:\n{SERVERPAL_EXE}\nhoặc\n{SERVERPAL_PY}")
+            messagebox.showerror("Lá»—i", f"KhÃ´ng tÃ¬m tháº¥y:\n{SERVERPAL_EXE}\nhoáº·c\n{SERVERPAL_PY}")
             return
         try:
-            # Bản phát hành full dùng Manager_ServerPal_App.exe (không cần Python trên máy người dùng).
-            # Nếu chưa có exe thì fallback chạy serverpal.py qua pythonw/.venv.
+            # Báº£n phÃ¡t hÃ nh full dÃ¹ng Manager_ServerPal_App.exe (khÃ´ng cáº§n Python trÃªn mÃ¡y ngÆ°á»i dÃ¹ng).
+            # Náº¿u chÆ°a cÃ³ exe thÃ¬ fallback cháº¡y serverpal.py qua pythonw/.venv.
             if target_serverpal.lower().endswith(".exe"):
                 self._serverpal_proc = subprocess.Popen(
                     [target_serverpal],
@@ -2793,7 +2793,7 @@ class SetupApp:
                 py_exec = VENV_PYTHONW if os.path.isfile(VENV_PYTHONW) else self._get_python_exec(ensure_venv=True)
                 py_exec = str(py_exec).strip().strip('"').strip("'")
                 if not py_exec:
-                    messagebox.showerror("Thiếu Python", "Không tìm thấy Python để chạy serverpal.py")
+                    messagebox.showerror("Thiáº¿u Python", "KhÃ´ng tÃ¬m tháº¥y Python Ä‘á»ƒ cháº¡y serverpal.py")
                     return
                 self._serverpal_proc = subprocess.Popen(
                     [py_exec, target_serverpal],
@@ -2805,12 +2805,12 @@ class SetupApp:
                     errors="replace",
                     creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
                 )
-            self._lbl_run_status.config(text="● Đang chạy", fg="#00ff88")
+            self._lbl_run_status.config(text="â— Äang cháº¡y", fg="#00ff88")
             self._btn_start.config(state="disabled")
             if hasattr(self, "_btn_restart"):
                 self._btn_restart.config(state="normal")
             self._btn_stop.config(state="normal")
-            self._log(f"▶ Start ServerPal: {target_serverpal} (PID {self._serverpal_proc.pid})")
+            self._log(f"â–¶ Start ServerPal: {target_serverpal} (PID {self._serverpal_proc.pid})")
 
             def _stream():
                 try:
@@ -2821,43 +2821,43 @@ class SetupApp:
                         if stripped:
                             self.root.after(0, lambda l=stripped: self._log(l))
                 except Exception as e:
-                    self.root.after(0, lambda: self._log(f"❌ Stream serverpal stdout lỗi: {e}"))
+                    self.root.after(0, lambda: self._log(f"âŒ Stream serverpal stdout lá»—i: {e}"))
 
             threading.Thread(target=_stream, daemon=True).start()
 
-            # Poll khi process kết thúc
+            # Poll khi process káº¿t thÃºc
             self.root.after(1000, self._poll_serverpal)
         except Exception as e:
-            messagebox.showerror("Lỗi", str(e))
+            messagebox.showerror("Lá»—i", str(e))
 
     def _poll_serverpal(self):
         if self._serverpal_proc and self._serverpal_proc.poll() is not None:
             code = self._serverpal_proc.returncode
-            self._lbl_run_status.config(text=f"● Đã dừng (exit {code})", fg="#ff5555")
+            self._lbl_run_status.config(text=f"â— ÄÃ£ dá»«ng (exit {code})", fg="#ff5555")
             self._btn_start.config(state="normal")
             self._btn_stop.config(state="disabled")
             if hasattr(self, "_btn_restart"):
                 self._btn_restart.config(state="normal")
-            self._log(f"⏹ ServerPal đã dừng (exit code {code})")
+            self._log(f"â¹ ServerPal Ä‘Ã£ dá»«ng (exit code {code})")
         else:
             self.root.after(1000, self._poll_serverpal)
 
     def _stop_serverpal(self):
         if self._serverpal_proc and self._serverpal_proc.poll() is None:
             self._serverpal_proc.terminate()
-            self._log("⏹ Đã gửi lệnh tắt bảng điều khiển")
+            self._log("â¹ ÄÃ£ gá»­i lá»‡nh táº¯t báº£ng Ä‘iá»u khiá»ƒn")
 
     def _restart_serverpal(self):
         """Restart serverpal.py without blocking the UI thread."""
         def _do_restart():
             try:
                 if self._serverpal_proc and self._serverpal_proc.poll() is None:
-                    self._log("⏳ Restart serverpal.py: đang dừng tiến trình cũ...")
+                    self._log("â³ Restart serverpal.py: Ä‘ang dá»«ng tiáº¿n trÃ¬nh cÅ©...")
                     try:
                         self._serverpal_proc.terminate()
                     except Exception:
                         pass
-                    # Chờ tối đa ~5s để tiến trình tắt hẳn
+                    # Chá» tá»‘i Ä‘a ~5s Ä‘á»ƒ tiáº¿n trÃ¬nh táº¯t háº³n
                     deadline = time.time() + 5
                     while time.time() < deadline:
                         if self._serverpal_proc.poll() is not None:
@@ -2869,7 +2869,7 @@ class SetupApp:
 
         threading.Thread(target=_do_restart, daemon=True).start()
 
-    # ── Update helpers ────────────────────────
+    # â”€â”€ Update helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _resolve_steamcmd_exe(self) -> str:
         steamcmd = self._vars.get("STEAMCMD_EXE", tk.StringVar()).get().strip()
         if not steamcmd:
@@ -2901,7 +2901,7 @@ class SetupApp:
     def _open_repo_releases(self):
         repo = self._get_repo_slug()
         if not repo:
-            messagebox.showwarning("Thiếu repo", "Điền GITHUB_REPO trước, ví dụ: owner/repo")
+            messagebox.showwarning("Thiáº¿u repo", "Äiá»n GITHUB_REPO trÆ°á»›c, vÃ­ dá»¥: owner/repo")
             return
         webbrowser.open(f"https://github.com/{repo}/releases")
 
@@ -2940,7 +2940,7 @@ class SetupApp:
                 if name.endswith(".exe") and dl:
                     installer_url = dl
                     break
-        # Fallback chuyên dụng: lấy installer từ source repo (không phụ thuộc release asset).
+        # Fallback chuyÃªn dá»¥ng: láº¥y installer tá»« source repo (khÃ´ng phá»¥ thuá»™c release asset).
         if not installer_url and tag:
             raw_url = f"https://github.com/{repo}/raw/main/release/Manager_ServerPal_Setup_v{tag}.exe"
             try:
@@ -2965,54 +2965,54 @@ class SetupApp:
         repo = self._get_repo_slug()
         if not repo:
             if not silent:
-                messagebox.showwarning("Thiếu repo", "Điền GITHUB_REPO trước, ví dụ: owner/repo")
+                messagebox.showwarning("Thiáº¿u repo", "Äiá»n GITHUB_REPO trÆ°á»›c, vÃ­ dá»¥: owner/repo")
             return
 
-        self._log(f"🔎 Đang kiểm tra bản mới từ GitHub: {repo}")
+        self._log(f"ðŸ”Ž Äang kiá»ƒm tra báº£n má»›i tá»« GitHub: {repo}")
 
         def _worker():
             try:
                 payload = self._fetch_latest_release_payload(repo)
                 if not payload:
-                    raise RuntimeError("Không đọc được thông tin release.")
+                    raise RuntimeError("KhÃ´ng Ä‘á»c Ä‘Æ°á»£c thÃ´ng tin release.")
                 latest = str(payload.get("version", "") or "")
                 if not latest:
-                    raise RuntimeError("Release không có tag version.")
+                    raise RuntimeError("Release khÃ´ng cÃ³ tag version.")
                 cur_v = self._version_tuple(APP_VERSION)
                 new_v = self._version_tuple(latest)
                 if new_v > cur_v:
                     self._latest_update_payload = payload
-                    msg = f"Có bản mới: v{latest} (hiện tại v{APP_VERSION})"
+                    msg = f"CÃ³ báº£n má»›i: v{latest} (hiá»‡n táº¡i v{APP_VERSION})"
                     self.root.after(0, lambda m=msg: self._lbl_update_status.config(text=m, fg="#66ff88"))
-                    self.root.after(0, lambda m=msg: self._log(f"✅ {m}"))
+                    self.root.after(0, lambda m=msg: self._log(f"âœ… {m}"))
                     if silent:
                         self.root.after(
                             0,
-                            lambda: self._log("ℹ️ Auto-check chỉ phát hiện phiên bản mới; tải/cài do bạn bấm nút 'Tải & cài bản mới'.")
+                            lambda: self._log("â„¹ï¸ Auto-check chá»‰ phÃ¡t hiá»‡n phiÃªn báº£n má»›i; táº£i/cÃ i do báº¡n báº¥m nÃºt 'Táº£i & cÃ i báº£n má»›i'.")
                         )
                     if not silent:
-                        note = payload.get("notes", "") or "(không có release notes)"
+                        note = payload.get("notes", "") or "(khÃ´ng cÃ³ release notes)"
                         preview = note[:800] + ("..." if len(note) > 800 else "")
-                        self.root.after(0, lambda: messagebox.showinfo("Có bản mới", f"{msg}\n\n{preview}"))
+                        self.root.after(0, lambda: messagebox.showinfo("CÃ³ báº£n má»›i", f"{msg}\n\n{preview}"))
                 else:
-                    msg = f"Đã mới nhất: v{APP_VERSION}"
+                    msg = f"ÄÃ£ má»›i nháº¥t: v{APP_VERSION}"
                     self.root.after(0, lambda m=msg: self._lbl_update_status.config(text=m, fg="#8ab4f8"))
                     if not silent:
                         self.root.after(0, lambda: messagebox.showinfo("Update", msg))
-                    self.root.after(0, lambda m=msg: self._log(f"ℹ️ {m}"))
+                    self.root.after(0, lambda m=msg: self._log(f"â„¹ï¸ {m}"))
             except Exception as e:
                 self.root.after(0, lambda e=e: self._lbl_update_status.config(
-                    text=f"Lỗi check update: {e}", fg="#ff6666"))
-                self.root.after(0, lambda e=e: self._log(f"❌ Check update lỗi: {e}"))
+                    text=f"Lá»—i check update: {e}", fg="#ff6666"))
+                self.root.after(0, lambda e=e: self._log(f"âŒ Check update lá»—i: {e}"))
                 if not silent:
-                    self.root.after(0, lambda e=e: messagebox.showerror("Lỗi update", str(e)))
+                    self.root.after(0, lambda e=e: messagebox.showerror("Lá»—i update", str(e)))
 
         threading.Thread(target=_worker, daemon=True).start()
 
     def _install_latest_update(self):
         payload = self._latest_update_payload
         if not payload:
-            if messagebox.askyesno("Chưa có dữ liệu", "Chưa check update. Kiểm tra ngay bây giờ?"):
+            if messagebox.askyesno("ChÆ°a cÃ³ dá»¯ liá»‡u", "ChÆ°a check update. Kiá»ƒm tra ngay bÃ¢y giá»?"):
                 self._check_app_update(silent=False)
             return
         installer_url = str(payload.get("installer_url", "") or "").strip()
@@ -3020,38 +3020,38 @@ class SetupApp:
         latest = str(payload.get("version", "") or "").strip()
         if not installer_url:
             if release_url:
-                if messagebox.askyesno("Không có link installer", "Release không có file setup .exe. Mở trang release?"):
+                if messagebox.askyesno("KhÃ´ng cÃ³ link installer", "Release khÃ´ng cÃ³ file setup .exe. Má»Ÿ trang release?"):
                     webbrowser.open(release_url)
             else:
-                messagebox.showerror("Lỗi", "Không tìm thấy installer_url trong GitHub release.")
+                messagebox.showerror("Lá»—i", "KhÃ´ng tÃ¬m tháº¥y installer_url trong GitHub release.")
             return
 
-        if not messagebox.askyesno("Xác nhận cập nhật", f"Tải và cài v{latest} ngay bây giờ?"):
+        if not messagebox.askyesno("XÃ¡c nháº­n cáº­p nháº­t", f"Táº£i vÃ  cÃ i v{latest} ngay bÃ¢y giá»?"):
             return
 
         def _worker():
             try:
                 fn = os.path.basename(urlparse(installer_url).path) or f"Manager_ServerPal_Setup_v{latest}.exe"
                 dst = os.path.join(tempfile.gettempdir(), fn)
-                self.root.after(0, lambda: self._log(f"⬇ Đang tải installer: {installer_url}"))
+                self.root.after(0, lambda: self._log(f"â¬‡ Äang táº£i installer: {installer_url}"))
                 urllib.request.urlretrieve(installer_url, dst)
                 if not os.path.isfile(dst):
-                    raise RuntimeError("Tải installer thất bại.")
+                    raise RuntimeError("Táº£i installer tháº¥t báº¡i.")
 
-                # Hash để log kiểm chứng tải file (không có manifest checksum thì vẫn log local SHA256).
+                # Hash Ä‘á»ƒ log kiá»ƒm chá»©ng táº£i file (khÃ´ng cÃ³ manifest checksum thÃ¬ váº«n log local SHA256).
                 h = hashlib.sha256()
                 with open(dst, "rb") as f:
                     for chunk in iter(lambda: f.read(1024 * 1024), b""):
                         h.update(chunk)
                 sha = h.hexdigest()
-                self.root.after(0, lambda sha=sha: self._log(f"🔐 SHA256 installer: {sha}"))
+                self.root.after(0, lambda sha=sha: self._log(f"ðŸ” SHA256 installer: {sha}"))
 
-                self.root.after(0, lambda p=dst: self._log(f"🚀 Mở installer: {p}"))
+                self.root.after(0, lambda p=dst: self._log(f"ðŸš€ Má»Ÿ installer: {p}"))
                 subprocess.Popen([dst], cwd=os.path.dirname(dst))
                 self.root.after(0, self.root.destroy)
             except Exception as e:
-                self.root.after(0, lambda e=e: self._log(f"❌ Cập nhật thất bại: {e}"))
-                self.root.after(0, lambda e=e: messagebox.showerror("Lỗi cập nhật", str(e)))
+                self.root.after(0, lambda e=e: self._log(f"âŒ Cáº­p nháº­t tháº¥t báº¡i: {e}"))
+                self.root.after(0, lambda e=e: messagebox.showerror("Lá»—i cáº­p nháº­t", str(e)))
 
         threading.Thread(target=_worker, daemon=True).start()
 
@@ -3059,27 +3059,27 @@ class SetupApp:
         steamcmd = self._resolve_steamcmd_exe()
         if not os.path.isfile(steamcmd):
             messagebox.showerror(
-                "Thiếu SteamCMD",
-                f"Không tìm thấy SteamCMD.exe tại:\n{steamcmd}\n\n"
-                "Vui lòng:\n"
-                "1. Tải SteamCMD từ link trong tab Update\n"
-                "2. Cập nhật đường dẫn trong tab Cấu Hình → STEAMCMD_EXE\n"
-                "3. Nhấn Lưu cấu hình rồi thử lại"
+                "Thiáº¿u SteamCMD",
+                f"KhÃ´ng tÃ¬m tháº¥y SteamCMD.exe táº¡i:\n{steamcmd}\n\n"
+                "Vui lÃ²ng:\n"
+                "1. Táº£i SteamCMD tá»« link trong tab Update\n"
+                "2. Cáº­p nháº­t Ä‘Æ°á»ng dáº«n trong tab Cáº¥u HÃ¬nh â†’ STEAMCMD_EXE\n"
+                "3. Nháº¥n LÆ°u cáº¥u hÃ¬nh rá»“i thá»­ láº¡i"
             )
             return ""
         return steamcmd
 
     def _run_preflight_check(self, require_steamcmd: bool = True) -> tuple[bool, str]:
-        """Preflight trước update: Python, pip, internet, steamcmd.exe."""
-        self._log("🔎 Preflight check trước khi update...")
+        """Preflight trÆ°á»›c update: Python, pip, internet, steamcmd.exe."""
+        self._log("ðŸ”Ž Preflight check trÆ°á»›c khi update...")
         ok = True
 
         # 1) Python version
         if IS_FROZEN_APP:
-            self._log("ℹ️ Bản đóng gói EXE: bỏ qua check Python/pip.")
+            self._log("â„¹ï¸ Báº£n Ä‘Ã³ng gÃ³i EXE: bá» qua check Python/pip.")
         else:
             py_ok = sys.version_info >= (3, 10)
-            self._log(f"{'✅' if py_ok else '❌'} Python >= 3.10: {sys.version.split()[0]}")
+            self._log(f"{'âœ…' if py_ok else 'âŒ'} Python >= 3.10: {sys.version.split()[0]}")
             ok = ok and py_ok
 
             # 2) pip
@@ -3091,21 +3091,21 @@ class SetupApp:
                 )
                 pip_ok = (r.returncode == 0)
                 pip_txt = (r.stdout or r.stderr).strip()
-                self._log(f"{'✅' if pip_ok else '❌'} pip: {pip_txt or 'không xác định'}")
+                self._log(f"{'âœ…' if pip_ok else 'âŒ'} pip: {pip_txt or 'khÃ´ng xÃ¡c Ä‘á»‹nh'}")
             except Exception as e:
-                self._log(f"❌ pip check lỗi: {e}")
+                self._log(f"âŒ pip check lá»—i: {e}")
             ok = ok and pip_ok
 
-        # 3) Admin quyền (không bắt buộc)
+        # 3) Admin quyá»n (khÃ´ng báº¯t buá»™c)
         admin_ok = False
         try:
             admin_ok = bool(ctypes.windll.shell32.IsUserAnAdmin())
         except Exception:
             admin_ok = False
         if admin_ok:
-            self._log("✅ Quyền hiện tại: Administrator")
+            self._log("âœ… Quyá»n hiá»‡n táº¡i: Administrator")
         else:
-            self._log("ℹ️ Quyền hiện tại: User thường (không cần admin để chạy app)")
+            self._log("â„¹ï¸ Quyá»n hiá»‡n táº¡i: User thÆ°á»ng (khÃ´ng cáº§n admin Ä‘á»ƒ cháº¡y app)")
 
         # 4) Internet
         net_ok = False
@@ -3113,37 +3113,37 @@ class SetupApp:
             urllib.request.urlopen("https://steamcdn-a.akamaihd.net", timeout=6)
             net_ok = True
         except Exception as e:
-            self._log(f"❌ Internet check lỗi: {e}")
+            self._log(f"âŒ Internet check lá»—i: {e}")
         if net_ok:
-            self._log("✅ Internet kết nối OK")
+            self._log("âœ… Internet káº¿t ná»‘i OK")
         ok = ok and net_ok
 
         # 5) steamcmd.exe
         steamcmd = self._resolve_steamcmd_exe()
         steam_ok = os.path.isfile(steamcmd) if steamcmd else False
         if steam_ok:
-            self._log(f"✅ steamcmd.exe: {steamcmd}")
+            self._log(f"âœ… steamcmd.exe: {steamcmd}")
         else:
-            self._log("❌ steamcmd.exe: chưa cấu hình hoặc file không tồn tại")
+            self._log("âŒ steamcmd.exe: chÆ°a cáº¥u hÃ¬nh hoáº·c file khÃ´ng tá»“n táº¡i")
             if not require_steamcmd:
-                self._log("ℹ️ Sẽ tiếp tục vì chế độ update SteamCMD có thể tự tải mới.")
+                self._log("â„¹ï¸ Sáº½ tiáº¿p tá»¥c vÃ¬ cháº¿ Ä‘á»™ update SteamCMD cÃ³ thá»ƒ tá»± táº£i má»›i.")
                 steam_ok = True
         ok = ok and steam_ok
 
-        self._log("✅ Preflight PASS" if ok else "❌ Preflight FAIL")
+        self._log("âœ… Preflight PASS" if ok else "âŒ Preflight FAIL")
         return ok, steamcmd
 
     def _run_game_update(self):
         pre_ok, _ = self._run_preflight_check(require_steamcmd=True)
         if not pre_ok:
-            messagebox.showerror("Preflight thất bại", "Preflight check thất bại. Xem log để sửa lỗi rồi thử lại.")
+            messagebox.showerror("Preflight tháº¥t báº¡i", "Preflight check tháº¥t báº¡i. Xem log Ä‘á»ƒ sá»­a lá»—i rá»“i thá»­ láº¡i.")
             return
         self._run_update_game(validate=False)
 
     def _run_game_validate(self):
         pre_ok, _ = self._run_preflight_check(require_steamcmd=True)
         if not pre_ok:
-            messagebox.showerror("Preflight thất bại", "Preflight check thất bại. Xem log để sửa lỗi rồi thử lại.")
+            messagebox.showerror("Preflight tháº¥t báº¡i", "Preflight check tháº¥t báº¡i. Xem log Ä‘á»ƒ sá»­a lá»—i rá»“i thá»­ láº¡i.")
             return
         self._run_update_game(validate=True)
 
@@ -3159,15 +3159,15 @@ class SetupApp:
         ]
         if validate:
             cmd.insert(-1, "validate")
-        self._log(f"🎮 Bắt đầu update game PalServer (App ID {PALWORLD_APPID})...")
+        self._log(f"ðŸŽ® Báº¯t Ä‘áº§u update game PalServer (App ID {PALWORLD_APPID})...")
         self._log("   " + " ".join(cmd))
         threading.Thread(target=self._run_cmd_bg, args=(cmd,), daemon=True).start()
 
     def _run_steamcmd_update(self):
-        """Cập nhật riêng SteamCMD (không đụng game files)."""
+        """Cáº­p nháº­t riÃªng SteamCMD (khÃ´ng Ä‘á»¥ng game files)."""
         pre_ok, _ = self._run_preflight_check(require_steamcmd=False)
         if not pre_ok:
-            messagebox.showerror("Preflight thất bại", "Preflight check thất bại. Xem log để sửa lỗi rồi thử lại.")
+            messagebox.showerror("Preflight tháº¥t báº¡i", "Preflight check tháº¥t báº¡i. Xem log Ä‘á»ƒ sá»­a lá»—i rá»“i thá»­ láº¡i.")
             return
         steamcmd = self._resolve_steamcmd_exe()
         steamcmd_dir = os.path.dirname(steamcmd) if steamcmd else ""
@@ -3183,9 +3183,9 @@ class SetupApp:
                 os.makedirs(steamcmd_dir, exist_ok=True)
                 zip_url = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
                 zip_path = os.path.join(steamcmd_dir, "steamcmd_update.zip")
-                self.root.after(0, lambda: self._log("🛠 Đang tải bản SteamCMD mới nhất..."))
+                self.root.after(0, lambda: self._log("ðŸ›  Äang táº£i báº£n SteamCMD má»›i nháº¥t..."))
                 urllib.request.urlretrieve(zip_url, zip_path)
-                self.root.after(0, lambda: self._log("📦 Đang giải nén cập nhật SteamCMD..."))
+                self.root.after(0, lambda: self._log("ðŸ“¦ Äang giáº£i nÃ©n cáº­p nháº­t SteamCMD..."))
                 with zipfile.ZipFile(zip_path, "r") as z:
                     z.extractall(steamcmd_dir)
                 try:
@@ -3196,11 +3196,11 @@ class SetupApp:
                 cfg = load_config()
                 cfg["STEAMCMD_EXE"] = steamcmd_exe
                 save_config(cfg)
-                self.root.after(0, lambda p=steamcmd_exe: self._log(f"✅ SteamCMD đã cập nhật: {p}"))
+                self.root.after(0, lambda p=steamcmd_exe: self._log(f"âœ… SteamCMD Ä‘Ã£ cáº­p nháº­t: {p}"))
                 if hasattr(self, "_lbl_steamcmd_path"):
                     self.root.after(0, lambda p=steamcmd_exe: self._lbl_steamcmd_path.config(text=p))
             except Exception as e:
-                self.root.after(0, lambda e=e: self._log(f"❌ Update SteamCMD lỗi: {e}"))
+                self.root.after(0, lambda e=e: self._log(f"âŒ Update SteamCMD lá»—i: {e}"))
 
         threading.Thread(target=_do, daemon=True).start()
 
@@ -3211,38 +3211,38 @@ class SetupApp:
             if os.path.isdir(d):
                 os.startfile(d)
                 return
-        messagebox.showinfo("Thông báo", "Chưa cấu hình đường dẫn STEAMCMD_EXE")
+        messagebox.showinfo("ThÃ´ng bÃ¡o", "ChÆ°a cáº¥u hÃ¬nh Ä‘Æ°á»ng dáº«n STEAMCMD_EXE")
 
-    # ── Install packages ──────────────────────
+    # â”€â”€ Install packages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _pip_install(self):
         if IS_FROZEN_APP:
-            messagebox.showinfo("Đã khóa runtime", "Bản EXE phát hành không cần và không hỗ trợ cài pip runtime.")
+            messagebox.showinfo("ÄÃ£ khÃ³a runtime", "Báº£n EXE phÃ¡t hÃ nh khÃ´ng cáº§n vÃ  khÃ´ng há»— trá»£ cÃ i pip runtime.")
             return
         if not os.path.isfile(REQ_FILE):
-            messagebox.showerror("Lỗi", f"Không tìm thấy:\n{REQ_FILE}")
+            messagebox.showerror("Lá»—i", f"KhÃ´ng tÃ¬m tháº¥y:\n{REQ_FILE}")
             return
         py_exec = self._get_python_exec(ensure_venv=True)
         py_exec = str(py_exec).strip().strip('"').strip("'")
         if not py_exec:
-            messagebox.showerror("Thiếu Python", "Không tìm thấy Python hệ thống để tạo .venv và cài packages.")
+            messagebox.showerror("Thiáº¿u Python", "KhÃ´ng tÃ¬m tháº¥y Python há»‡ thá»‘ng Ä‘á»ƒ táº¡o .venv vÃ  cÃ i packages.")
             return
         cmd = [py_exec, "-m", "pip", "install",
                "-r", REQ_FILE, "--disable-pip-version-check"]
-        self._log("🐍 Bắt đầu pip install -r requirements.txt vào .venv ...")
-        # Force UTF-8 để pip đọc được file requirements.txt chứa ký tự đặc biệt
+        self._log("ðŸ Báº¯t Ä‘áº§u pip install -r requirements.txt vÃ o .venv ...")
+        # Force UTF-8 Ä‘á»ƒ pip Ä‘á»c Ä‘Æ°á»£c file requirements.txt chá»©a kÃ½ tá»± Ä‘áº·c biá»‡t
         env = os.environ.copy()
         env["PYTHONUTF8"] = "1"
         threading.Thread(target=self._run_cmd_bg, args=(cmd,), kwargs={"env": env}, daemon=True).start()
 
     def _npm_install(self):
         if IS_FROZEN_APP:
-            messagebox.showinfo("Đã khóa runtime", "Bản EXE phát hành không cần và không hỗ trợ npm runtime.")
+            messagebox.showinfo("ÄÃ£ khÃ³a runtime", "Báº£n EXE phÃ¡t hÃ nh khÃ´ng cáº§n vÃ  khÃ´ng há»— trá»£ npm runtime.")
             return
         if not os.path.isdir(MAP_DIR):
-            self._log("ℹ️ Không thấy palserver-online-map-main. Bỏ qua npm install (không cần cho Live Map embedded).")
+            self._log("â„¹ï¸ KhÃ´ng tháº¥y palserver-online-map-main. Bá» qua npm install (khÃ´ng cáº§n cho Live Map embedded).")
             return
         npm_exec = "npm.cmd" if os.name == "nt" else "npm"
-        self._log("🟩 Bắt đầu npm install trong palserver-online-map-main ...")
+        self._log("ðŸŸ© Báº¯t Ä‘áº§u npm install trong palserver-online-map-main ...")
         os.makedirs(NPM_CACHE_DIR, exist_ok=True)
         env = os.environ.copy()
         env["npm_config_cache"] = NPM_CACHE_DIR
@@ -3266,8 +3266,8 @@ class SetupApp:
                     v = (r.stdout or r.stderr).strip()
                     self.root.after(0, lambda l=label, v=v: self._log(f"  {l}: {v}"))
                 except Exception as e:
-                    self.root.after(0, lambda l=label, e=e: self._log(f"  {l}: ❌ {e}"))
-        self._log("🔍 Kiểm tra phiên bản...")
+                    self.root.after(0, lambda l=label, e=e: self._log(f"  {l}: âŒ {e}"))
+        self._log("ðŸ” Kiá»ƒm tra phiÃªn báº£n...")
         threading.Thread(target=_do, daemon=True).start()
 
     def _show_requirements(self):
@@ -3284,7 +3284,7 @@ class SetupApp:
             t.insert(tk.END, content)
             t.configure(state="disabled")
 
-    # ── Run command in background ─────────────
+    # â”€â”€ Run command in background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _run_cmd_bg(self, cmd: list, cwd: str = None, **kwargs):
         try:
             proc = subprocess.Popen(
@@ -3299,16 +3299,17 @@ class SetupApp:
                     self.root.after(0, lambda l=stripped: self._log(l))
             proc.wait()
             code = proc.returncode
-            msg = "✅ Hoàn thành" if code == 0 else f"⚠️ Kết thúc (exit {code})"
+            msg = "âœ… HoÃ n thÃ nh" if code == 0 else f"âš ï¸ Káº¿t thÃºc (exit {code})"
             self.root.after(0, lambda m=msg: self._log(m))
         except FileNotFoundError as e:
-            self.root.after(0, lambda: self._log(f"❌ Lệnh không tồn tại: {e}"))
+            self.root.after(0, lambda: self._log(f"âŒ Lá»‡nh khÃ´ng tá»“n táº¡i: {e}"))
         except Exception as e:
-            self.root.after(0, lambda: self._log(f"❌ Lỗi: {e}"))
+            self.root.after(0, lambda: self._log(f"âŒ Lá»—i: {e}"))
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if __name__ == "__main__":
     root = tk.Tk()
     app  = SetupApp(root)
     root.mainloop()
+
